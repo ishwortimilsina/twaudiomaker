@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { Audio } from 'expo-av';
 
 import useClock from '../hooks/useClock';
-import { Button } from '../common'; 
+import { Button } from '../common';
 
+let _recording = null;
 export default function Record(props) {
+    // const _recording = useRef(null);
     const [ recordSessionStarted, changeRecordSessionStarted ] = useState(false);
     const [ isRecording, changeIsRecording ] = useState(false);
     const [, clockString ] = useClock({
@@ -13,24 +16,81 @@ export default function Record(props) {
         stopClock: !recordSessionStarted
     });
 
-    const onRecordPress = () => {
+    const onRecordPress = async () => {
         console.log('Record clicked.');
         changeIsRecording(true);
         if (!recordSessionStarted) {
-            console.log('Recording session started.')
-            changeRecordSessionStarted(true);
+            const recording = new Audio.Recording();
+            try {
+                await recording.prepareToRecordAsync(
+                    Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+                );
+                _recording = recording;
+                await _recording.startAsync();
+                // get the recording status each second
+                await _recording.setProgressUpdateInterval(1000);
+                console.log('Recording session started.');
+                changeRecordSessionStarted(true);
+            }
+            catch (err) {
+                console.log('An error occured while starting a recording session.');
+                console.log(err);
+            }
+        } else {
+            try {
+                if (_recording) {
+                    await _recording.startAsync();
+                    console.log('Resumed the paused audio recording.');
+                } else {
+                    console.log('No prepared paused recording found to resume.');
+                }
+            }
+            catch (err) {
+                console.log('An error occured while resuming the paused recording.');
+                console.log(err);
+            }
         }
     };
 
-    const onPauseRecordPress = () => {
+    const onPauseRecordPress = async () => {
         console.log('Pause Record Clicked.');
-        changeIsRecording(false);
+        try {
+            if (_recording) {
+                await _recording.pauseAsync();
+                changeIsRecording(false);
+                console.log('Successfully paused recording.');
+            } else {
+                console.log('No prepared recording found to pause.');
+            }
+        }
+        catch (err) {
+            console.log('An error occured while trying to pause recording.');
+            console.log(err);
+        }
     };
 
-    const onStopRecordPress = () => {
-        console.log('Stop Record Clicked. Recording session ended.');
-        changeIsRecording(false);
-        changeRecordSessionStarted(false);
+    const onStopRecordPress = async () => {
+        console.log('Stop Record Clicked.');
+        try {
+            if (_recording) {
+                await _recording.stopAndUnloadAsync();
+                changeIsRecording(false);
+                changeRecordSessionStarted(false);
+                console.log('Recording session ended.');
+
+                const info = await _recording.getURI();
+                console.log(JSON.stringify(info));
+
+                const { sound, status } = await _recording.createNewLoadedSoundAsync();
+                console.log(status);
+            } else {
+                console.log('No prepared recording found to stop.');
+            }
+        }
+        catch (err) {
+            console.log('An error occured while trying to stop the recording.');
+            console.log(err);
+        }
     };
 
     return (
