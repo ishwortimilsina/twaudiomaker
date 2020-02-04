@@ -5,9 +5,9 @@ import { Audio } from 'expo-av';
 import useClock from '../hooks/useClock';
 import { Button } from '../common';
 
-let _recording = null;
 export default function Record(props) {
-    // const _recording = useRef(null);
+    const _recording = useRef(null);
+    const _sound = useRef(null);
     const [ recordSessionStarted, changeRecordSessionStarted ] = useState(false);
     const [ isRecording, changeIsRecording ] = useState(false);
     const [, clockString ] = useClock({
@@ -25,10 +25,10 @@ export default function Record(props) {
                 await recording.prepareToRecordAsync(
                     Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
                 );
-                _recording = recording;
-                await _recording.startAsync();
+                _recording.current = recording;
+                await _recording.current.startAsync();
                 // get the recording status each second
-                await _recording.setProgressUpdateInterval(1000);
+                await _recording.current.setProgressUpdateInterval(1000);
                 console.log('Recording session started.');
                 changeRecordSessionStarted(true);
             }
@@ -38,8 +38,8 @@ export default function Record(props) {
             }
         } else {
             try {
-                if (_recording) {
-                    await _recording.startAsync();
+                if (_recording.current) {
+                    await _recording.current.startAsync();
                     console.log('Resumed the paused audio recording.');
                 } else {
                     console.log('No prepared paused recording found to resume.');
@@ -55,8 +55,8 @@ export default function Record(props) {
     const onPauseRecordPress = async () => {
         console.log('Pause Record Clicked.');
         try {
-            if (_recording) {
-                await _recording.pauseAsync();
+            if (_recording.current) {
+                await _recording.current.pauseAsync();
                 changeIsRecording(false);
                 console.log('Successfully paused recording.');
             } else {
@@ -72,17 +72,18 @@ export default function Record(props) {
     const onStopRecordPress = async () => {
         console.log('Stop Record Clicked.');
         try {
-            if (_recording) {
-                await _recording.stopAndUnloadAsync();
+            if (_recording.current) {
+                await _recording.current.stopAndUnloadAsync();
                 changeIsRecording(false);
                 changeRecordSessionStarted(false);
                 console.log('Recording session ended.');
 
-                const info = await _recording.getURI();
-                console.log(JSON.stringify(info));
+                const info = await _recording.current.getURI();
 
-                const { sound, status } = await _recording.createNewLoadedSoundAsync();
-                console.log(status);
+                const { sound } = await _recording.current.createNewLoadedSoundAsync();
+                _sound.current = sound;
+                // to play the sound
+                await sound.playAsync();
             } else {
                 console.log('No prepared recording found to stop.');
             }

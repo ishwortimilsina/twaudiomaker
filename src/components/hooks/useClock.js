@@ -59,6 +59,7 @@ export default function useClock(props){
             // clear the timer interval if it's active
             if (timer) {
                 clearInterval(timer);
+                timer = null;
             }
         }
 
@@ -66,6 +67,7 @@ export default function useClock(props){
         return () => {
             if (timer) {
                 clearInterval(timer);
+                timer = null;
             }
         };
     }, [props.startTime, props.stopClock, props.pauseClock, seconds]);
