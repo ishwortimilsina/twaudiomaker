@@ -86,7 +86,7 @@ export default function Record(props) {
                 const soundAsset = await MediaLibrary.createAssetAsync(uri);
                 // to play the sound
                 // await sound.playAsync();
-                props.setRecordedSound(sound);
+                props.setPlaybackInstance(sound);
             } else {
                 console.log('No prepared recording found to stop.');
             }

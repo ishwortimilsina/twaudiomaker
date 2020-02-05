@@ -8,7 +8,7 @@ import Playback from './playback';
 
 export default function Home(props) {
     const [ havePermission, setPermissionStatus ] = useState(false);
-    const [ recordedSound, setRecordedSound ] = useState(null);
+    const [ playbackInstance, setPlaybackInstance ] = useState(null);
 
     // Ask for the user's permission to use the phone's mic
     // update 'havePermission' state value
@@ -45,10 +45,10 @@ export default function Home(props) {
                     ? (
                         <>
                             <Record
-                                setRecordedSound={setRecordedSound}
+                                setPlaybackInstance={setPlaybackInstance}
                             />
                             <Playback
-                                recordedSound={recordedSound}
+                                playbackInstance={playbackInstance}
                             />
                         </>
                 ) : (

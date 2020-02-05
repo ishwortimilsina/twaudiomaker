@@ -7,16 +7,16 @@ export default function Playback(props) {
     const onPlayPress = async () => {
         console.log('Playback play pressed.');
 
-        if (props.recordedSound) {
-            const soundStatus = await props.recordedSound.getStatusAsync();
+        if (props.playbackInstance) {
+            const soundStatus = await props.playbackInstance.getStatusAsync();
             if (soundStatus.isLoaded) {
                 // to determine if the sound had just finished playing
                 if (soundStatus.playableDurationMillis - soundStatus.positionMillis <= 500) {
-                    await props.recordedSound.replayAsync();
+                    await props.playbackInstance.replayAsync();
                     console.log('Replaying the sound.');
                 }
                 else {
-                    await props.recordedSound.playAsync();
+                    await props.playbackInstance.playAsync();
                     console.log('Sound found. Played.');
                 }
             }
@@ -26,10 +26,10 @@ export default function Playback(props) {
     const onPausePress = async () => {
         console.log('Playback pause pressed.');
 
-        if (props.recordedSound) {
-            const soundStatus = await props.recordedSound.getStatusAsync();
+        if (props.playbackInstance) {
+            const soundStatus = await props.playbackInstance.getStatusAsync();
             if (soundStatus.isPlaying) {
-                await props.recordedSound.pauseAsync();
+                await props.playbackInstance.pauseAsync();
                 console.log('A playing sound found. Paused.');
             }
         }
@@ -38,10 +38,10 @@ export default function Playback(props) {
     const onStopPress = async () => {
         console.log('Playback stop pressed.');
 
-        if (props.recordedSound) {
-            const soundStatus = await props.recordedSound.getStatusAsync();
+        if (props.playbackInstance) {
+            const soundStatus = await props.playbackInstance.getStatusAsync();
             if (soundStatus.isPlaying) {
-                await props.recordedSound.stopAsync();
+                await props.playbackInstance.stopAsync();
                 console.log('A playing sound found. Stopped.');
             }
         }
