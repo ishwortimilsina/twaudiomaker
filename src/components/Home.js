@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Record from './record';
 import { Audio } from 'expo-av';
 import * as MediaLibrary from 'expo-media-library';
 
+import Record from './record';
+import Playback from './playback';
+
 export default function Home(props) {
     const [ havePermission, setPermissionStatus ] = useState(false);
+    const [ recordedSound, setRecordedSound ] = useState(null);
 
     // Ask for the user's permission to use the phone's mic
     // update 'havePermission' state value
@@ -40,9 +43,14 @@ export default function Home(props) {
             {
                 havePermission
                     ? (
-                        <View>
-                            <Record />
-                        </View>
+                        <>
+                            <Record
+                                setRecordedSound={setRecordedSound}
+                            />
+                            <Playback
+                                recordedSound={recordedSound}
+                            />
+                        </>
                 ) : (
                     <Text>The app needs to have permission to use the mic to be functional.</Text>
                 )

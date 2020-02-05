@@ -79,15 +79,14 @@ export default function Record(props) {
                 changeRecordSessionStarted(false);
                 console.log('Recording session ended.');
 
-                const info = await _recording.current.getURI();
-
-                const { sound } = await _recording.current.createNewLoadedSoundAsync();
+                let { sound } = await _recording.current.createNewLoadedSoundAsync();
                 _sound.current = sound;
 
-                const soundAsset = await MediaLibrary.createAssetAsync(info);
-                console.log(soundAsset)
+                let uri = _recording.current.getURI();
+                const soundAsset = await MediaLibrary.createAssetAsync(uri);
                 // to play the sound
-                await sound.playAsync();
+                // await sound.playAsync();
+                props.setRecordedSound(sound);
             } else {
                 console.log('No prepared recording found to stop.');
             }
@@ -108,11 +107,11 @@ export default function Record(props) {
             <View style={styles.buttonsContainer}>
                 {
                     !isRecording ? (
-                        <Button onPress={onRecordPress}>
+                        <Button onPress={onRecordPress} style={{minWidth:150}}>
                             Record
                         </Button>
                     ) : (
-                        <Button onPress={onPauseRecordPress}>
+                        <Button onPress={onPauseRecordPress} style={{minWidth:150}}>
                             Pause
                         </Button>
                     ) 
@@ -120,6 +119,7 @@ export default function Record(props) {
                 <Button
                     onPress={onStopRecordPress}
                     disabled={!recordSessionStarted}
+                    style={{minWidth:150}}
                 >
                     Stop
                 </Button>

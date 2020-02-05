@@ -32,8 +32,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 10,
         borderStyle: 'solid',
-        borderWidth: 2,
-        minWidth:150
+        borderWidth: 2
     },
     disabledButtonStyle: {
         borderColor: '#AAA'
