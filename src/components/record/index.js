@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
+import * as MediaLibrary from 'expo-media-library';
 
 import useClock from '../hooks/useClock';
 import { Button } from '../common';
@@ -82,6 +83,9 @@ export default function Record(props) {
 
                 const { sound } = await _recording.current.createNewLoadedSoundAsync();
                 _sound.current = sound;
+
+                const soundAsset = await MediaLibrary.createAssetAsync(info);
+                console.log(soundAsset)
                 // to play the sound
                 await sound.playAsync();
             } else {

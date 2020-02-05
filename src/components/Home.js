@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Record from './record';
 import { Audio } from 'expo-av';
+import * as MediaLibrary from 'expo-media-library';
 
 export default function Home(props) {
     const [ havePermission, setPermissionStatus ] = useState(false);
@@ -11,14 +12,25 @@ export default function Home(props) {
     useEffect(() => {
         Audio.requestPermissionsAsync()
             .then((perm) => {
-                if (perm.status !== 'denied') {
-                    setPermissionStatus(true);
+                if (perm.status === 'granted') {
+                    MediaLibrary.requestPermissionsAsync()
+                        .then((medPerm) => {
+                            if (perm.status === 'granted') {
+                                setPermissionStatus(true);
+                            } else {
+                                setPermissionStatus(false);
+                            }
+                        })
+                        .catch(err => {
+                            console.log('An error occured while asking for media permission.');
+                            console.log(err);
+                        })
                 } else {
                     setPermissionStatus(false);
                 }
             })
             .catch(err => {
-                console.log('An error occured whhile asking for permission.')
+                console.log('An error occured while asking for mic permission.')
                 console.log(err);
             })
     }, []);
