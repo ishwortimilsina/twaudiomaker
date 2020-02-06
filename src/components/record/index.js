@@ -3,23 +3,28 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
 import * as MediaLibrary from 'expo-media-library';
 
-import useClock from '../hooks/useClock';
 import { Button } from '../common';
+import { millToClockString } from '../../utils/datetime';
 
 export default function Record(props) {
     const _recording = useRef(null);
     const _sound = useRef(null);
     const [ recordSessionStarted, changeRecordSessionStarted ] = useState(false);
     const [ isRecording, changeIsRecording ] = useState(false);
-    const [, clockString ] = useClock({
-        startTime: 0,
-        pauseClock: recordSessionStarted && !isRecording,
-        stopClock: !recordSessionStarted
-    });
+    const [ recordingDuration, setRecordingDuration ] = useState(0);
+    
+    const onRecordingStatusUpdate = status => {
+        if (status.canRecord) {
+            changeIsRecording(status.isRecording);
+            setRecordingDuration(status.durationMillis);
+        } else if (status.isDoneRecording) {
+            changeIsRecording(status.isRecording);
+            setRecordingDuration(status.durationMillis);
+        }
+    };
 
     const onRecordPress = async () => {
         console.log('Record clicked.');
-        changeIsRecording(true);
         if (!recordSessionStarted) {
             const recording = new Audio.Recording();
             try {
@@ -29,7 +34,7 @@ export default function Record(props) {
                 _recording.current = recording;
                 await _recording.current.startAsync();
                 // get the recording status each second
-                await _recording.current.setProgressUpdateInterval(1000);
+                await _recording.current.setOnRecordingStatusUpdate(onRecordingStatusUpdate);
                 console.log('Recording session started.');
                 changeRecordSessionStarted(true);
             }
@@ -51,6 +56,11 @@ export default function Record(props) {
                 console.log(err);
             }
         }
+
+        if (props.latestPlaybackInstance) {
+            await props.latestPlaybackInstance.setOnPlaybackStatusUpdate(null);
+            props.setPlaybackInstance(null);
+        }
     };
 
     const onPauseRecordPress = async () => {
@@ -58,7 +68,6 @@ export default function Record(props) {
         try {
             if (_recording.current) {
                 await _recording.current.pauseAsync();
-                changeIsRecording(false);
                 console.log('Successfully paused recording.');
             } else {
                 console.log('No prepared recording found to pause.');
@@ -75,7 +84,6 @@ export default function Record(props) {
         try {
             if (_recording.current) {
                 await _recording.current.stopAndUnloadAsync();
-                changeIsRecording(false);
                 changeRecordSessionStarted(false);
                 console.log('Recording session ended.');
 
@@ -101,7 +109,7 @@ export default function Record(props) {
         <View style={styles.container}>
             <View style={styles.clockContainer}>
                 <Text style={styles.clockText}>
-                    {clockString}
+                    {millToClockString(recordingDuration)}
                 </Text>
             </View>
             <View style={styles.buttonsContainer}>

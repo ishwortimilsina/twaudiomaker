@@ -2,33 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Slider } from 'react-native';
 
 import { Button } from '../common';
-
-/**
- * Function to convert a number to a string with length of at least two
- * eg: 1 => '01', 12 => '12'
- * @param {Number} num 
- */
-const convertTo2Digits = (num) => {
-    return num > 9 ? '' + num : '0'+ num;
-};
-
-/**
- * Function to convert a given time in seconds to a clock string
- * Eg: 3672000 => '01:01:02'
- * @param {Number} millTime 
- */
-const timeToClockString = (millTime) => {
-    const time = Math.ceil(Number(millTime) / 1000);
-    const hours = Math.floor(time/3600);
-    const minutes = Math.floor((time - (hours * 3600))/60);
-    const seconds = time - (hours * 3600) - (minutes * 60);
-
-    const hoursStr = convertTo2Digits(hours);
-    const minStr = convertTo2Digits(minutes);
-    const secStr = convertTo2Digits(seconds);
-
-    return `${hoursStr}:${minStr}:${secStr}`;
-}
+import { millToClockString } from '../../utils/datetime';
 
 export default function Playback(props) {
     const [isPlaybackPlaying, setIsPlaybackPlaying] = useState(false);
@@ -52,6 +26,11 @@ export default function Playback(props) {
                 if (soundStatus.isLoaded) {
                     await props.playbackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
                 }
+            } else {
+                setIsPlaybackPlaying(false);
+                setPlaybackDuration(null);
+                setPlaybackPosition(null);
+                setIsPlaybackLoaded(false);
             }
         })();
     }, [props.playbackInstance]);
@@ -94,7 +73,7 @@ export default function Playback(props) {
         if (
             props.playbackInstance != null &&
             playbackPosition != null &&
-            playbackDuration != null
+            playbackDuration
         ) {
             return playbackPosition/playbackDuration;
         }
@@ -105,12 +84,12 @@ export default function Playback(props) {
         if (
           props.playbackInstance != null &&
           playbackPosition != null &&
-          playbackDuration != null
+          playbackDuration
         ) {
-          return {
-              remTime: timeToClockString(playbackPosition),
-              totTime: timeToClockString(playbackDuration)
-          };
+            return {
+                remTime: millToClockString(playbackPosition),
+                totTime: millToClockString(playbackDuration)
+            };
         }
         return {
             remTime: '00:00:00',

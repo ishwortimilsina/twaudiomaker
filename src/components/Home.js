@@ -45,6 +45,7 @@ export default function Home(props) {
                     ? (
                         <>
                             <Record
+                                latestPlaybackInstance={playbackInstance}
                                 setPlaybackInstance={setPlaybackInstance}
                             />
                             <Playback
