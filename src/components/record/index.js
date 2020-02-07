@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
 import * as MediaLibrary from 'expo-media-library';
 
 import { Button } from '../common';
 import { millToClockString } from '../../utils/datetime';
+import { ActionContext } from '../../AppContext';
 
 export default function Record(props) {
     const _recording = useRef(null);
@@ -12,6 +13,7 @@ export default function Record(props) {
     const [ recordSessionStarted, changeRecordSessionStarted ] = useState(false);
     const [ isRecording, changeIsRecording ] = useState(false);
     const [ recordingDuration, setRecordingDuration ] = useState(0);
+    const { addAudioToStore } = useContext(ActionContext);
     
     const onRecordingStatusUpdate = status => {
         if (status.canRecord) {
@@ -87,13 +89,21 @@ export default function Record(props) {
                 changeRecordSessionStarted(false);
                 console.log('Recording session ended.');
 
-                let { sound } = await _recording.current.createNewLoadedSoundAsync();
+                const { sound } = await _recording.current.createNewLoadedSoundAsync();
                 _sound.current = sound;
 
-                let uri = _recording.current.getURI();
-                const soundAsset = await MediaLibrary.createAssetAsync(uri);
-                // to play the sound
-                // await sound.playAsync();
+                // to download the recording
+                const uri = await _recording.current.getURI();
+                // const soundAsset = await MediaLibrary.createAssetAsync(uri);
+
+                const status = await sound.getStatusAsync();
+                addAudioToStore({
+                    audioId: uri.split('/Audio/recording-')[1].slice(0, -4),
+                    audioUri: uri,
+                    audioName: uri.split('/Audio/')[1],
+                    audioDuration: status.durationMillis,
+                    audioCreated: Date.now()
+                });
                 props.setPlaybackInstance(sound);
             } else {
                 console.log('No prepared recording found to stop.');
