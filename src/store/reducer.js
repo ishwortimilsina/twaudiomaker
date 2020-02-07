@@ -14,6 +14,16 @@ const reducer = (state, action) => {
                     action.payload.audioId
                 ]
             };
+        case 'changeIsRecordingGoingOn':
+            return {
+                ...state,
+                isRecordingGoingOn: action.isRecordingGoingOn
+            };
+        case 'changeIsPlaybackGoingOn':
+            return {
+                ...state,
+                isPlaybackGoingOn: action.isPlaybackGoingOn
+            };
         default:
             return state;
     }

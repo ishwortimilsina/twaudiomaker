@@ -7,11 +7,22 @@ import Home from './components/Home';
 
 export default function Main(props) {
     const [state, dispatch] = useReducer(reducer, initialState);
+
+    // All the actions
     const addAudioToStore = (audio) => {
         dispatch({ type: 'addAudio', payload: audio });
-    }
+    };
+    const changeIsRecordingGoingOn = (isRecordingGoingOn) => {
+        dispatch({ type: 'changeIsRecordingGoingOn', isRecordingGoingOn });
+    };
+    const changeIsPlaybackGoingOn = (isPlaybackGoingOn) => {
+        dispatch({ type: 'changeIsPlaybackGoingOn', isPlaybackGoingOn });
+    };
+
     const actions = useMemo(() => ({
-        addAudioToStore
+        addAudioToStore,
+        changeIsPlaybackGoingOn,
+        changeIsRecordingGoingOn
     }), []);    
 
     return (

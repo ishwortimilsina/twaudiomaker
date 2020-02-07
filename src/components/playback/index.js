@@ -1,39 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Slider } from 'react-native';
+import { Audio } from 'expo-av';
 
 import { Button } from '../common';
 import { millToClockString } from '../../utils/datetime';
+import { ActionContext, StateContext } from '../../AppContext';
 
 export default function Playback(props) {
+    const [playbackInstance, setPlaybackInstance] = useState(null);
     const [isPlaybackPlaying, setIsPlaybackPlaying] = useState(false);
     const [playbackDuration, setPlaybackDuration] = useState(null);
     const [playbackPosition, setPlaybackPosition] = useState(null);
     const [isPlaybackLoaded, setIsPlaybackLoaded] = useState(false);
+    const { changeIsPlaybackGoingOn } = useContext(ActionContext);
+    const { isPlaybackGoingOn, isRecordingGoingOn } = useContext(StateContext);
 
     const onPlaybackStatusUpdate = (status) => {
         setIsPlaybackPlaying(status.isPlaying);
         setPlaybackDuration(status.playableDurationMillis);
         setPlaybackPosition(status.positionMillis);
         setIsPlaybackLoaded(status.isLoaded);
+
+        // update isRecordingGoingOn value in the store
+        // so that all the components can pick it up
+        if (status.isPlaying && !isPlaybackGoingOn) {
+            changeIsPlaybackGoingOn(true);
+        } else if (!status.isPlaying && isPlaybackGoingOn) {
+            changeIsPlaybackGoingOn(false);
+        }
     };
 
     useEffect(() => {
-        // whenever the new palybackInstance arrives, set a function to be run
-        // with the latest status every 500 milliseconds (default)
         (async () => {
-            if (props.playbackInstance) {
-                const soundStatus = await props.playbackInstance.getStatusAsync();
-                if (soundStatus.isLoaded) {
-                    await props.playbackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-                }
-            } else {
+            if (props.selectedPlayback) {
+                const playbackObject = new Audio.Sound();
+                await playbackObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+                await playbackObject.loadAsync({ uri: props.selectedPlayback.audioUri });
+                setPlaybackInstance(playbackObject);
+            }
+        })();
+    }, [props.selectedPlayback]);
+
+    useEffect(() => {
+        (async () => {
+            if (isRecordingGoingOn && playbackInstance) {
+                await playbackInstance.unloadAsync();
+                await playbackInstance.setOnPlaybackStatusUpdate(null);
                 setIsPlaybackPlaying(false);
                 setPlaybackDuration(null);
                 setPlaybackPosition(null);
                 setIsPlaybackLoaded(false);
+                setPlaybackInstance(null);
             }
         })();
-    }, [props.playbackInstance]);
+    }, [isRecordingGoingOn, isPlaybackGoingOn]);
 
     const onPlayPress = async () => {
         console.log('Playback play pressed.');
@@ -41,11 +61,11 @@ export default function Playback(props) {
         if (isPlaybackLoaded) {
             // to determine if the sound had just finished playing
             if (playbackDuration - playbackPosition <= 500) {
-                await props.playbackInstance.replayAsync();
+                await playbackInstance.replayAsync();
                 console.log('Replaying the sound.');
             }
             else {
-                await props.playbackInstance.playAsync();
+                await playbackInstance.playAsync();
                 console.log('Sound found. Played.');
             }
         }
@@ -55,7 +75,7 @@ export default function Playback(props) {
         console.log('Playback pause pressed.');
 
         if (isPlaybackPlaying) {
-            await props.playbackInstance.pauseAsync();
+            await playbackInstance.pauseAsync();
             console.log('A playing sound found. Paused.');
         }
     };
@@ -64,14 +84,14 @@ export default function Playback(props) {
         console.log('Playback stop pressed.');
 
         if (isPlaybackPlaying) {
-            await props.playbackInstance.stopAsync();
+            await playbackInstance.stopAsync();
             console.log('A playing sound found. Stopped.');
         }
     };
 
     const getSeekSliderPosition = () => {
         if (
-            props.playbackInstance != null &&
+            playbackInstance != null &&
             playbackPosition != null &&
             playbackDuration
         ) {
@@ -82,9 +102,9 @@ export default function Playback(props) {
 
     const getPlaybackTimestamp = () => {
         if (
-          props.playbackInstance != null &&
-          playbackPosition != null &&
-          playbackDuration
+            playbackInstance != null &&
+            playbackPosition != null &&
+            playbackDuration
         ) {
             return {
                 remTime: millToClockString(playbackPosition),

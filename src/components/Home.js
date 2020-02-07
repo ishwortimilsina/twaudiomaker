@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
 import * as MediaLibrary from 'expo-media-library';
@@ -6,10 +6,12 @@ import * as MediaLibrary from 'expo-media-library';
 import Record from './record';
 import Playback from './playback';
 import PlaybackList from './playback/playbackList';
+import { StateContext } from '../AppContext';
 
 export default function Home(props) {
     const [ havePermission, setPermissionStatus ] = useState(false);
     const [ playbackInstance, setPlaybackInstance ] = useState(null);
+    const { playbacks, playbackIds } = useContext(StateContext);
 
     // Ask for the user's permission to use the phone's mic
     // update 'havePermission' state value
@@ -45,11 +47,10 @@ export default function Home(props) {
                 havePermission
                     ? (
                         <>
-                            <Record
-                                latestPlaybackInstance={playbackInstance}
-                                setPlaybackInstance={setPlaybackInstance}
+                            <Record />
+                            <Playback
+                                selectedPlayback={playbacks[playbackIds[playbackIds.length - 1]]}
                             />
-                            <PlaybackList />
                         </>
                 ) : (
                     <Text>The app needs to have permission to use the mic to be functional.</Text>

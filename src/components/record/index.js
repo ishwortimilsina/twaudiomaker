@@ -5,7 +5,7 @@ import * as MediaLibrary from 'expo-media-library';
 
 import { Button } from '../common';
 import { millToClockString } from '../../utils/datetime';
-import { ActionContext } from '../../AppContext';
+import { ActionContext, StateContext } from '../../AppContext';
 
 export default function Record(props) {
     const _recording = useRef(null);
@@ -13,8 +13,11 @@ export default function Record(props) {
     const [ recordSessionStarted, changeRecordSessionStarted ] = useState(false);
     const [ isRecording, changeIsRecording ] = useState(false);
     const [ recordingDuration, setRecordingDuration ] = useState(0);
-    const { addAudioToStore } = useContext(ActionContext);
-    
+    const { addAudioToStore, changeIsRecordingGoingOn } = useContext(ActionContext);
+    const { isRecordingGoingOn } = useContext(StateContext);
+    const _isRecordingGoingOn = useRef(null);
+    _isRecordingGoingOn.current = isRecordingGoingOn;
+
     const onRecordingStatusUpdate = status => {
         if (status.canRecord) {
             changeIsRecording(status.isRecording);
@@ -22,6 +25,14 @@ export default function Record(props) {
         } else if (status.isDoneRecording) {
             changeIsRecording(status.isRecording);
             setRecordingDuration(status.durationMillis);
+        }
+
+        // update isRecordingGoingOn value in the store
+        // so that all the components can pick it up
+        if (status.isRecording && !_isRecordingGoingOn.current) {
+            changeIsRecordingGoingOn(true);
+        } else if (!status.isRecording && _isRecordingGoingOn.current) {
+            changeIsRecordingGoingOn(false);
         }
     };
 
@@ -57,11 +68,6 @@ export default function Record(props) {
                 console.log('An error occured while resuming the paused recording.');
                 console.log(err);
             }
-        }
-
-        if (props.latestPlaybackInstance) {
-            await props.latestPlaybackInstance.setOnPlaybackStatusUpdate(null);
-            props.setPlaybackInstance(null);
         }
     };
 
