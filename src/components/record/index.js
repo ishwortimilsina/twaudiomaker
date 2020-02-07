@@ -104,7 +104,6 @@ export default function Record(props) {
                     audioDuration: status.durationMillis,
                     audioCreated: Date.now()
                 });
-                props.setPlaybackInstance(sound);
             } else {
                 console.log('No prepared recording found to stop.');
             }

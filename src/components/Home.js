@@ -5,6 +5,7 @@ import * as MediaLibrary from 'expo-media-library';
 
 import Record from './record';
 import Playback from './playback';
+import PlaybackList from './playback/playbackList';
 
 export default function Home(props) {
     const [ havePermission, setPermissionStatus ] = useState(false);
@@ -48,9 +49,7 @@ export default function Home(props) {
                                 latestPlaybackInstance={playbackInstance}
                                 setPlaybackInstance={setPlaybackInstance}
                             />
-                            <Playback
-                                playbackInstance={playbackInstance}
-                            />
+                            <PlaybackList />
                         </>
                 ) : (
                     <Text>The app needs to have permission to use the mic to be functional.</Text>
