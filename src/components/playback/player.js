@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Slider } from 'react-native';
 import { Audio } from 'expo-av';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { Button, CardSection } from '../common';
 import { millToClockString } from '../../utils/datetime';
@@ -85,8 +86,9 @@ export default function Playback(props) {
     const onStopPress = async () => {
         console.log('Playback stop pressed.');
 
-        if (isPlaybackPlaying) {
+        if (isPlaybackGoingOn) {
             await playbackInstance.stopAsync();
+            changeIsPlaybackGoingOn(false);
             console.log('A playing sound found. Stopped.');
         }
     };
@@ -101,6 +103,7 @@ export default function Playback(props) {
             await playbackInstance.setOnPlaybackStatusUpdate(null);
         }
         selectPlayback(null);
+        changeIsPlaybackGoingOn(false);
     }
 
     const getSeekSliderPosition = () => {
@@ -135,10 +138,19 @@ export default function Playback(props) {
 
     return (
         <CardSection style={styles.controlsContainer}>
-            <Button
+            <MaterialCommunityIcons
                 style={styles.closeButton}
+                name="close-circle"
+                size={32}
+                color="black"
                 onPress={onClosePress}
-            >X</Button>
+            />
+            <Text
+                style={styles.nameStyle}
+                numberOfLines={1}
+            >
+                {props.selectedPlayback && props.selectedPlayback.audioName}
+            </Text>
             <Slider
                 style={styles.playbackSlider}
                 value={getSeekSliderPosition()}
@@ -155,22 +167,31 @@ export default function Playback(props) {
             <View style={styles.buttonsContainer}>
                 {
                     isPlaybackPlaying ? (
-                        <Button onPress={onPausePress} style={styles.buttons}>
-                            Pause
-                        </Button>
+                        <MaterialCommunityIcons
+                            style={styles.controlButtons}
+                            name="pause-circle"
+                            size={70}
+                            color="blue"
+                            onPress={onPausePress}
+                        />
                     ) : (
-                        <Button onPress={onPlayPress} style={styles.buttons}>
-                            Play
-                        </Button>
+                        <MaterialCommunityIcons
+                            style={styles.controlButtons}
+                            name="play-circle"
+                            size={70}
+                            color="green"
+                            onPress={onPlayPress}
+                        />
                     )
                 }
-                <Button
+                <MaterialCommunityIcons
+                    style={styles.controlButtons}
+                    name="stop"
+                    size={50}
+                    color={isPlaybackGoingOn ? "red" : "grey"}
                     onPress={onStopPress}
-                    style={styles.buttons}
                     disabled={!isPlaybackGoingOn}
-                >
-                    Stop
-                </Button>
+                />
             </View>
         </CardSection>
     );
@@ -206,12 +227,20 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         color: Colors.text_medium
     },
-    buttons: {
-        minWidth: 100,
-        backgroundColor: Colors.background_light
-    },
     closeButton: {
         alignSelf: 'flex-end',
         top: -20
+    },
+    controlButtons: {
+        marginRight: 20,
+        marginLeft: 10,
+        marginTop: -20
+    },
+    nameStyle: {
+        marginBottom: 10,
+        marginTop: -30,
+        padding: 5,
+        fontWeight: 'bold',
+        fontSize: 15
     }
 });
