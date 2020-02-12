@@ -37,6 +37,8 @@ export default function Playback(props) {
                 const playbackObject = new Audio.Sound();
                 await playbackObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
                 await playbackObject.loadAsync({ uri: props.selectedPlayback.audioUri });
+                await playbackObject.playAsync();
+                console.log('Sound found, loaded, and played.');
                 setPlaybackInstance(playbackObject);
             }
         })();
@@ -64,8 +66,7 @@ export default function Playback(props) {
             if (playbackDuration - playbackPosition <= 500) {
                 await playbackInstance.replayAsync();
                 console.log('Replaying the sound.');
-            }
-            else {
+            } else {
                 await playbackInstance.playAsync();
                 console.log('Sound found. Played.');
             }
@@ -98,8 +99,8 @@ export default function Playback(props) {
             console.log('A playing sound found. Stopped.');
             await playbackInstance.unloadAsync();
             await playbackInstance.setOnPlaybackStatusUpdate(null);
-            selectPlayback(null);
         }
+        selectPlayback(null);
     }
 
     const getSeekSliderPosition = () => {
