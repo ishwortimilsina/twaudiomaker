@@ -2,9 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Slider } from 'react-native';
 import { Audio } from 'expo-av';
 
-import { Button } from '../common';
+import { Button, CardSection } from '../common';
 import { millToClockString } from '../../utils/datetime';
 import { ActionContext, StateContext } from '../../AppContext';
+import * as Colors from '../../themes/Colors';
 
 export default function Playback(props) {
     const [playbackInstance, setPlaybackInstance] = useState(null);
@@ -12,7 +13,7 @@ export default function Playback(props) {
     const [playbackDuration, setPlaybackDuration] = useState(null);
     const [playbackPosition, setPlaybackPosition] = useState(null);
     const [isPlaybackLoaded, setIsPlaybackLoaded] = useState(false);
-    const { changeIsPlaybackGoingOn } = useContext(ActionContext);
+    const { changeIsPlaybackGoingOn, selectPlayback } = useContext(ActionContext);
     const { isPlaybackGoingOn, isRecordingGoingOn } = useContext(StateContext);
 
     const onPlaybackStatusUpdate = (status) => {
@@ -89,6 +90,18 @@ export default function Playback(props) {
         }
     };
 
+    const onClosePress = async () => {
+        console.log('Close button pressed on the player.');
+
+        if (isPlaybackPlaying) {
+            await playbackInstance.stopAsync();
+            console.log('A playing sound found. Stopped.');
+            await playbackInstance.unloadAsync();
+            await playbackInstance.setOnPlaybackStatusUpdate(null);
+            selectPlayback(null);
+        }
+    }
+
     const getSeekSliderPosition = () => {
         if (
             playbackInstance != null &&
@@ -120,7 +133,11 @@ export default function Playback(props) {
     const { remTime, totTime } = getPlaybackTimestamp();
 
     return (
-        <View style={styles.controlsContainer}>
+        <CardSection style={styles.controlsContainer}>
+            <Button
+                style={styles.closeButton}
+                onPress={onClosePress}
+            >X</Button>
             <Slider
                 style={styles.playbackSlider}
                 value={getSeekSliderPosition()}
@@ -135,17 +152,26 @@ export default function Playback(props) {
                 </Text>
             </View>
             <View style={styles.buttonsContainer}>
-                <Button onPress={onPlayPress} style={{minWidth:100}}>
-                    Play
-                </Button>
-                <Button onPress={onPausePress} style={{minWidth:100}}>
-                    Pause
-                </Button>
-                <Button onPress={onStopPress} style={{minWidth:100}}>
+                {
+                    isPlaybackPlaying ? (
+                        <Button onPress={onPausePress} style={styles.buttons}>
+                            Pause
+                        </Button>
+                    ) : (
+                        <Button onPress={onPlayPress} style={styles.buttons}>
+                            Play
+                        </Button>
+                    )
+                }
+                <Button
+                    onPress={onStopPress}
+                    style={styles.buttons}
+                    disabled={!isPlaybackGoingOn}
+                >
                     Stop
                 </Button>
             </View>
-        </View>
+        </CardSection>
     );
 }
 
@@ -154,15 +180,15 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        margin: 10,
-        backgroundColor: '#fff',
+        marginTop: 30,
+        alignSelf: 'stretch',
+        backgroundColor: Colors.background_medium
     },
     buttonsContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        margin: 10,
-        backgroundColor: '#fff',
+        margin: 10
     },
     playbackSlider: {
         alignSelf: 'stretch'
@@ -171,12 +197,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#fff',
         alignSelf: 'stretch'
     },
     playbackTimestamp: {
         textAlign: 'right',
         alignSelf: 'stretch',
-        paddingRight: 20
+        paddingRight: 20,
+        color: Colors.text_medium
+    },
+    buttons: {
+        minWidth: 100,
+        backgroundColor: Colors.background_light
+    },
+    closeButton: {
+        alignSelf: 'flex-end',
+        top: -20
     }
 });
