@@ -24,6 +24,11 @@ const reducer = (state, action) => {
                 ...state,
                 isPlaybackGoingOn: action.isPlaybackGoingOn
             };
+        case 'selectPlayback':
+            return {
+                ...state,
+                selectedPlayback: action.selectedPlayback
+            };
         default:
             return state;
     }

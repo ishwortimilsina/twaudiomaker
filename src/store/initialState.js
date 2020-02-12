@@ -13,7 +13,8 @@ const initialState = {
     playbacks: {},
     playbackIds: [],
     isRecordingGoingOn: false,
-    isPlaybackGoingOn: false
+    isPlaybackGoingOn: false,
+    selectedPlayback: null
 };
 
 export default initialState;

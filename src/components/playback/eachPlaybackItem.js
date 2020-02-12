@@ -1,21 +1,26 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { CardSection } from '../common';
 import * as Colors from '../../themes/Colors';
 import { millToClockString } from '../../utils/datetime';
+import { ActionContext } from '../../AppContext';
 
 export default function EachPlaybackItem(props) {
     const { item } = props;
     const { audioName, audioDuration, audioCreated } = item;
+    const { selectPlayback } = useContext(ActionContext);
     const createdDate = new Date(audioCreated);
     const timeString = createdDate.toLocaleTimeString('en-US');
     const dateString = createdDate.toLocaleDateString('en-US');
     const durationString = millToClockString(audioDuration);
 
     return (
-        <TouchableWithoutFeedback
-            onPress={() => {}}
+        <TouchableOpacity
+            onPress={() => {
+                console.log(`Selected audio: ${item.audioName}`);
+                selectPlayback(item);
+            }}
         >
             <CardSection style={ styles.cardSectionStyle }>
                 <View style={ styles.coinAmountContainerStyle }>
@@ -26,7 +31,7 @@ export default function EachPlaybackItem(props) {
                     </View>
                 </View>
             </CardSection>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
     )
 }
 

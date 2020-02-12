@@ -5,7 +5,6 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 import Record from './record';
 import Playback from './playback';
-import PlaybackList from './playback/playbackList';
 import { StateContext } from '../AppContext';
 
 const Tab = createMaterialTopTabNavigator();
@@ -22,15 +21,9 @@ export default function Home(props) {
                 />
                 <Tab.Screen
                     name="Recordings"
-                    component={PlaybackList}
+                    component={Playback}
                 />
             </Tab.Navigator>
-            {/* <Playback
-                selectedPlayback={
-                    selectedPlayback || 
-                    playbacks[playbackIds[playbackIds.length - 1]]
-                }
-            /> */}
         </NavigationContainer>
     );
 }
