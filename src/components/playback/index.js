@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Slider } from 'react-native';
+import React, { useContext } from 'react';
+import { View, StyleSheet, Slider } from 'react-native';
 
 import { StateContext } from '../../AppContext';
 import PlaybackList from './playbackList';

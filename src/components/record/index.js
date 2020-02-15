@@ -28,7 +28,10 @@ export default function Record(props) {
         console.log('Record clicked.');
         if (!recordSessionStarted) {
             try {
-                const audioPath = AudioUtils.DocumentDirectoryPath + '/test.mp3';
+                const time = new Date();
+                const stringDateTime = `${time.getMonth()}-${time.getDate()}-${time.getFullYear()} ${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}`;
+
+                const audioPath = AudioUtils.DocumentDirectoryPath + `/Recording ${stringDateTime}.mp3`;
                 AudioRecorder.prepareRecordingAtPath(audioPath, {
                     SampleRate: 22050,
                     Channels: 2,
@@ -92,14 +95,17 @@ export default function Record(props) {
         try {
             if (_recording.current) {
                 const filePath = await _recording.current.stopRecording();
+                console.log(filePath)
                 changeRecordSessionStarted(false);
                 changeIsRecording(false);
                 console.log('Recording session ended.');
 
+                const filePathSplit = filePath.split("/");
+
                 addAudioToStore({
-                    audioId: "test-" + Date.now(),
+                    audioId: `Recording-${Date.now()}`,
                     audioUri: filePath,
-                    audioName: "test.mp3",
+                    audioName: filePathSplit[filePathSplit.length - 1],
                     audioDuration: recordingDuration,
                     audioCreated: Date.now()
                 });

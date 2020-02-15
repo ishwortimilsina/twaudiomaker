@@ -4,7 +4,6 @@ import Slider from '@react-native-community/slider';
 import Audio from 'react-native-sound';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import useInterval from '../hooks/useInterval';
 import { CardSection } from '../common';
 import { millToClockString } from '../../utils/datetime';
 import { ActionContext, StateContext } from '../../AppContext';

@@ -54,6 +54,8 @@ target 'twaudiomaker' do
 
   pod 'react-native-slider', :path => '../node_modules/@react-native-community/slider'
 
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
   target 'twaudiomakerTests' do
     inherit! :search_paths
     # Pods for testing
