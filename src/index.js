@@ -1,8 +1,7 @@
 import React, { useReducer, useMemo, useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Audio } from 'expo-av';
-import * as MediaLibrary from 'expo-media-library';
 
+import { requestRecordAudioPermission, checkRecordAudioPermission } from './utils/appPermissions';
 import { StateContext, ActionContext } from './AppContext';
 import reducer from './store/reducer';
 import initialState from './store/initialState';
@@ -33,32 +32,21 @@ export default function Main(props) {
         selectPlayback
     }), []);
 
-    // Ask for the user's permission to use the phone's mic
+    // first check the permission to use the mic.
+    // Ask for the permission if not already granted.
     // update 'havePermission' state value
     useEffect(() => {
-        Audio.requestPermissionsAsync()
-            .then((perm) => {
-                if (perm.status === 'granted') {
-                    MediaLibrary.requestPermissionsAsync()
-                        .then((medPerm) => {
-                            if (perm.status === 'granted') {
-                                setPermissionStatus(true);
-                            } else {
-                                setPermissionStatus(false);
-                            }
-                        })
-                        .catch(err => {
-                            console.log('An error occured while asking for media permission.');
-                            console.log(err);
-                        })
-                } else {
-                    setPermissionStatus(false);
+        (async () => {
+            let isGranted = await checkRecordAudioPermission();
+            if (isGranted) {
+                setPermissionStatus(true);
+            } else {
+                let permission = await requestRecordAudioPermission();
+                if (permission) {
+                    setPermissionStatus(true);
                 }
-            })
-            .catch(err => {
-                console.log('An error occured while asking for mic permission.')
-                console.log(err);
-            })
+            }
+        })();
     }, []);
     
     if (havePermission) {

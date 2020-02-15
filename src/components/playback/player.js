@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Slider } from 'react-native';
-import { Audio } from 'expo-av';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import Slider from '@react-native-community/slider';
+import Audio from 'react-native-sound';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { Button, CardSection } from '../common';
+import useInterval from '../hooks/useInterval';
+import { CardSection } from '../common';
 import { millToClockString } from '../../utils/datetime';
 import { ActionContext, StateContext } from '../../AppContext';
 import * as Colors from '../../themes/Colors';
 
+let playbackProgress = null;
 export default function Playback(props) {
     const [playbackInstance, setPlaybackInstance] = useState(null);
     const [isPlaybackPlaying, setIsPlaybackPlaying] = useState(false);
@@ -17,39 +20,130 @@ export default function Playback(props) {
     const { changeIsPlaybackGoingOn, selectPlayback } = useContext(ActionContext);
     const { isPlaybackGoingOn, isRecordingGoingOn } = useContext(StateContext);
 
-    const onPlaybackStatusUpdate = (status) => {
-        setIsPlaybackPlaying(status.isPlaying);
-        setPlaybackDuration(status.playableDurationMillis);
-        setPlaybackPosition(status.positionMillis);
-        setIsPlaybackLoaded(status.isLoaded);
-
+    useEffect(() => {
         // update isRecordingGoingOn value in the store
         // so that all the components can pick it up
-        if (status.isPlaying && !isPlaybackGoingOn) {
+        if (isPlaybackPlaying && !isPlaybackGoingOn) {
             changeIsPlaybackGoingOn(true);
-        } else if (!status.isPlaying && isPlaybackGoingOn) {
+        } else if (!isPlaybackPlaying && isPlaybackGoingOn) {
             changeIsPlaybackGoingOn(false);
+        }
+    }, [isPlaybackGoingOn, isPlaybackPlaying]);
+
+    // This function will be used as a callback to "play"
+    // Gets invoked whenever a playback finishes playing
+    const playComplete = (success) => {
+        if(playbackInstance){
+            if (success) {
+                console.log('successfully finished playing');
+            } else {
+                console.log('playback failed due to audio decoding errors');
+            }
+
+            // stop tracking the playback progress
+            if (playbackProgress) {
+                clearInterval(playbackProgress);
+                playbackProgress = null;
+            }
+
+            setIsPlaybackPlaying(false);
+            setPlaybackPosition(null);
         }
     };
 
-    useEffect(() => {
-        (async () => {
-            if (props.selectedPlayback) {
-                const playbackObject = new Audio.Sound();
-                await playbackObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-                await playbackObject.loadAsync({ uri: props.selectedPlayback.audioUri });
-                await playbackObject.playAsync();
-                console.log('Sound found, loaded, and played.');
-                setPlaybackInstance(playbackObject);
+    // function to track the playback progress and update the appropriate state values
+    const onPlaybackStatusUpdate = (playbackObject) => {
+        if (playbackObject) {
+            playbackProgress = setInterval(() => {
+                playbackObject.getCurrentTime((seconds, isPlaying) => {
+                    setPlaybackPosition(Math.floor(seconds * 1000));
+                    setIsPlaybackPlaying(isPlaying);
+                });
+            }, 500);
+        }
+    };
+
+    // Function to play the currently selected sound
+    // if the playback is already loaded, just play it
+    // otherwise, load the sound and then play it.
+    const playSound = () => {
+        try {
+            if (playbackInstance) {
+                // basically means, resume
+                // we already have a loaded playbackInstance, we just need to play it
+                console.log('A loaded sound found. Playing it.');
+                playbackInstance.play(playComplete);
+                setIsPlaybackPlaying(true);
+                
+                // track the playback progress
+                onPlaybackStatusUpdate(playbackInstance);
+
+            } else {
+                console.log('Loading the selected sound to play it.');
+                const playbackObject = new Audio(
+                    props.selectedPlayback.audioUri, '',
+                    async (error) => {
+                        if (error) {
+                            console.log('failed to load the sound', error);
+                            Alert.alert('Notice', 'audio file error. (Error code : 1)');
+                        } else {
+                            if (playbackObject) {
+
+                                // loaded successfully
+                                setIsPlaybackLoaded(true);
+                                setPlaybackInstance(playbackObject);
+
+                                // update playback duration
+                                let playbackDuration = playbackObject.getDuration();
+                                playbackDuration = playbackDuration && playbackDuration * 1000;
+                                setPlaybackDuration(playbackDuration);
+                                console.log(`Duration in seconds: ${playbackDuration}`);
+                            
+                                // Play the sound with an onEnd callback
+                                await playbackObject.play(playComplete);
+
+                                console.log('Setting isPlaybackGoingOn to true.');
+                                setIsPlaybackPlaying(true);
+
+                                // track the playback progress
+                                onPlaybackStatusUpdate(playbackObject);
+                            }
+                        }
+                    }
+                );
             }
-        })();
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+    useEffect(() => {
+        // immediately play the sound whenever the selected sound changes
+        // do not wait for the user to click on the play button
+        if (props.selectedPlayback) {
+            playSound();
+        } else {
+            if (playbackProgress) {
+                clearInterval(playbackProgress);
+                playbackProgress = null;
+            }
+        }
     }, [props.selectedPlayback]);
 
     useEffect(() => {
+        // if the recording has started while the audio is playing,
+        // stop playing, release the resource and reset all the state values
         (async () => {
             if (isRecordingGoingOn && playbackInstance) {
-                await playbackInstance.unloadAsync();
-                await playbackInstance.setOnPlaybackStatusUpdate(null);
+                await playbackInstance.release();
+
+                // stop tracking the playback progress
+                if (playbackProgress) {
+                    clearInterval(playbackProgress);
+                    playbackProgress = null;
+                }
+
                 setIsPlaybackPlaying(false);
                 setPlaybackDuration(null);
                 setPlaybackPosition(null);
@@ -61,24 +155,14 @@ export default function Playback(props) {
 
     const onPlayPress = async () => {
         console.log('Playback play pressed.');
-
-        if (isPlaybackLoaded) {
-            // to determine if the sound had just finished playing
-            if (playbackDuration - playbackPosition <= 500) {
-                await playbackInstance.replayAsync();
-                console.log('Replaying the sound.');
-            } else {
-                await playbackInstance.playAsync();
-                console.log('Sound found. Played.');
-            }
-        }
+        playSound();
     };
 
     const onPausePress = async () => {
         console.log('Playback pause pressed.');
 
         if (isPlaybackPlaying) {
-            await playbackInstance.pauseAsync();
+            await playbackInstance.pause();
             console.log('A playing sound found. Paused.');
         }
     };
@@ -86,24 +170,42 @@ export default function Playback(props) {
     const onStopPress = async () => {
         console.log('Playback stop pressed.');
 
+        // stop tracking the playback progress
+        if (playbackProgress) {
+            clearInterval(playbackProgress);
+            playbackProgress = null;
+        }
+
         if (isPlaybackGoingOn) {
-            await playbackInstance.stopAsync();
-            changeIsPlaybackGoingOn(false);
+            await playbackInstance.stop();
+
+            setIsPlaybackPlaying(false);
+            setPlaybackPosition(null);
+
             console.log('A playing sound found. Stopped.');
         }
     };
 
     const onClosePress = async () => {
         console.log('Close button pressed on the player.');
+        // stop tracking the playback progress
+        if (playbackProgress) {
+            clearInterval(playbackProgress);
+            playbackProgress = null;
+        }
 
         if (isPlaybackPlaying) {
-            await playbackInstance.stopAsync();
+            await playbackInstance.stop();
+            await playbackInstance.release();
+            setIsPlaybackPlaying(false);
+            setPlaybackDuration(null);
+            setPlaybackPosition(null);
+            setIsPlaybackLoaded(false);
+            setPlaybackInstance(null);
+
             console.log('A playing sound found. Stopped.');
-            await playbackInstance.unloadAsync();
-            await playbackInstance.setOnPlaybackStatusUpdate(null);
         }
         selectPlayback(null);
-        changeIsPlaybackGoingOn(false);
     }
 
     const getSeekSliderPosition = () => {
@@ -138,13 +240,16 @@ export default function Playback(props) {
 
     return (
         <CardSection style={styles.controlsContainer}>
-            <MaterialCommunityIcons
+            <TouchableOpacity
                 style={styles.closeButton}
-                name="close-circle"
-                size={32}
-                color="black"
                 onPress={onClosePress}
-            />
+            >
+                <Icon
+                    name="close-circle"
+                    size={32}
+                    color="black"
+                />
+            </TouchableOpacity>
             <Text
                 style={styles.nameStyle}
                 numberOfLines={1}
@@ -167,31 +272,40 @@ export default function Playback(props) {
             <View style={styles.buttonsContainer}>
                 {
                     isPlaybackPlaying ? (
-                        <MaterialCommunityIcons
+                        <TouchableOpacity
                             style={styles.controlButtons}
-                            name="pause-circle"
-                            size={70}
-                            color="blue"
                             onPress={onPausePress}
-                        />
+                        >
+                            <Icon
+                                name="pause-circle"
+                                size={70}
+                                color="blue"
+                            />
+                        </TouchableOpacity>
                     ) : (
-                        <MaterialCommunityIcons
+                        <TouchableOpacity
                             style={styles.controlButtons}
-                            name="play-circle"
-                            size={70}
-                            color="green"
                             onPress={onPlayPress}
-                        />
+                        >
+                            <Icon
+                                name="play-circle"
+                                size={70}
+                                color="green"
+                            />
+                        </TouchableOpacity>
                     )
                 }
-                <MaterialCommunityIcons
+                <TouchableOpacity
                     style={styles.controlButtons}
-                    name="stop"
-                    size={50}
-                    color={isPlaybackGoingOn ? "red" : "grey"}
                     onPress={onStopPress}
                     disabled={!isPlaybackGoingOn}
-                />
+                >
+                    <Icon
+                        name="stop"
+                        size={50}
+                        color={isPlaybackGoingOn ? "red" : "grey"}
+                    />
+                </TouchableOpacity>
             </View>
         </CardSection>
     );

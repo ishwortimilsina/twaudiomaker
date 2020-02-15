@@ -6,7 +6,7 @@ import PlaybackList from './playbackList';
 import Player from './player';
 
 export default function Playback(props) {
-    const { playbacks, playbackIds, selectedPlayback } = useContext(StateContext);
+    const { selectedPlayback } = useContext(StateContext);
 
     return (
         <View style={styles.controlsContainer}>
