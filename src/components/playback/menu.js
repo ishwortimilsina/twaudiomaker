@@ -1,12 +1,22 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Modal from "react-native-modal";
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { TouchableMenuItem } from '../common/touchableMenuItem';
+import { deleteAudioFile } from '../../utils/fileManagement';
 
 export default function Menu(props) {
     const { isModalVisible, toggleModal, name } = props;
+
+    const onDeletePress = async () => {
+        console.log('Delete clicked.');
+        const result = await deleteAudioFile(name);
+        if (result.error) {
+            console.log(result.error.message);
+        }
+        toggleModal(false);
+    };
+
     return (
         <Modal
             isVisible={isModalVisible}
@@ -16,54 +26,29 @@ export default function Menu(props) {
                 <Text style={styles.menuTitle} numberOfLines={1}>{name}</Text>
                 <TouchableMenuItem
                     onPress={() => console.log('Share clicked.')}
-                >
-                    <Icon
-                        name="share"
-                        size={32}
-                        color="black"
-                    />
-                    <Text style={styles.menuItemText}>Share</Text>
-                </TouchableMenuItem>
+                    itemIconName="share"
+                    itemText="Share"
+                />
                 <TouchableMenuItem
                     onPress={() => console.log('Rename clicked.')}
-                >
-                    <Icon
-                        name="rename-box"
-                        size={32}
-                        color="black"
-                    />
-                    <Text style={styles.menuItemText}>Rename</Text>
-                </TouchableMenuItem>
+                    itemIconName="rename-box"
+                    itemText="Rename"
+                />
                 <TouchableMenuItem
                     onPress={() => console.log('Move clicked.')}
-                >
-                    <Icon
-                        name="folder-move"
-                        size={32}
-                        color="black"
-                    />
-                    <Text style={styles.menuItemText}>Move</Text>
-                </TouchableMenuItem>
+                    itemIconName="folder-move"
+                    itemText="Move"
+                />
                 <TouchableMenuItem
                     onPress={() => console.log('Details clicked.')}
-                >
-                    <Icon
-                        name="ballot"
-                        size={32}
-                        color="black"
-                    />
-                    <Text style={styles.menuItemText}>Details</Text>
-                </TouchableMenuItem>
+                    itemIconName="ballot"
+                    itemText="Details"
+                />
                 <TouchableMenuItem
-                    onPress={() => console.log('Delete clicked.')}
-                >
-                    <Icon
-                        name="delete-empty"
-                        size={32}
-                        color="black"
-                    />
-                    <Text style={styles.menuItemText}>Delete</Text>
-                </TouchableMenuItem>
+                    onPress={onDeletePress}
+                    itemIconName="delete-empty"
+                    itemText="Delete"
+                />
             </View>
         </Modal>
     )
@@ -86,10 +71,5 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 10
-    },
-    menuItemText: {
-        paddingTop: 5,
-        fontSize: 18,
-        marginLeft: 30
     }
 });
