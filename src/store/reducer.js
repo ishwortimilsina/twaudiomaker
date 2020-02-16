@@ -8,20 +8,14 @@ const reducer = (state, action) => {
                     [action.payload.audioId]: {
                         ...action.payload
                     }
-                },
-                playbackIds: [
-                    ...state.playbackIds,
-                    action.payload.audioId
-                ]
+                }
             };
         case 'removeAudio':
             let newPlaybacks = {};
-            let newPlaybackIds = [];
 
-            for (let audioId of state.playbackIds) {
+            for (let audioId in state.playbacks) {
                 if (audioId !== action.audioId) {
                     newPlaybacks[audioId] = state.playbacks[audioId];
-                    newPlaybackIds.push(audioId);
                 }
             }
 
@@ -35,7 +29,6 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 playbacks: newPlaybacks,
-                playbackIds: newPlaybackIds,
                 selectedPlayback
             };
         case 'changeIsRecordingGoingOn':

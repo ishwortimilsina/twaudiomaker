@@ -11,7 +11,6 @@
  */
 const initialState = {
     playbacks: {},
-    playbackIds: [],
     isRecordingGoingOn: false,
     isPlaybackGoingOn: false,
     selectedPlayback: null

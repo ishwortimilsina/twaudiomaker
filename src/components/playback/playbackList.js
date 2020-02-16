@@ -5,7 +5,7 @@ import EachPlaybackItem from './eachPlaybackItem';
 import { getAudioFilesList } from '../../utils/fileManagement';
 
 export default function PlaybackList(props) {
-    const { playbacks, playbackIds } = useContext(StateContext);
+    const { playbacks } = useContext(StateContext);
     const { addAudioToStore } = useContext(ActionContext);
 
     useEffect(() => {
@@ -15,6 +15,7 @@ export default function PlaybackList(props) {
                 for (let file of results) {
                     if (file.name && file.name.indexOf('.mp3') > -1) {
                         const createDate = new Date(file.mtime.toString()).getTime();
+                        console.log(file)
                         addAudioToStore({
                             audioId: `Recording-${createDate}`,
                             audioUri: file.path,
@@ -35,7 +36,7 @@ export default function PlaybackList(props) {
     return (
         <View style={ styles.listContainer }>
             <FlatList
-                data={playbackIds.map((id) => playbacks[id])}
+                data={Object.values(playbacks)}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.audioId}
             />

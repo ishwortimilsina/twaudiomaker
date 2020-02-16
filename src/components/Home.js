@@ -1,17 +1,13 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import Record from './record';
 import Playback from './playback';
-import { StateContext } from '../AppContext';
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function Home(props) {
-    const { playbacks, playbackIds, selectedPlayback } = useContext(StateContext);
-
     return (
         <NavigationContainer>
             <Tab.Navigator>
