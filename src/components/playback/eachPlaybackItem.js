@@ -1,15 +1,18 @@
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { CardSection } from '../common';
 import * as Colors from '../../themes/Colors';
 import { millToClockString } from '../../utils/datetime';
 import { ActionContext } from '../../AppContext';
+import Menu from './menu';
 
 export default function EachPlaybackItem(props) {
     const { item } = props;
     const { audioName, audioDuration, audioCreated } = item;
     const { selectPlayback } = useContext(ActionContext);
+    const [ isModalVisible, toggleModal ] = useState(false);
     const createdDate = new Date(audioCreated);
     const timeString = createdDate.toLocaleTimeString('en-US');
     const dateString = createdDate.toLocaleDateString('en-US');
@@ -30,7 +33,22 @@ export default function EachPlaybackItem(props) {
                         <Text style={styles.dateStyle}>{dateString}  {timeString}</Text>
                     </View>
                 </View>
+                <TouchableOpacity
+                    style={styles.kebabStyle}
+                    onPress={() => toggleModal(!isModalVisible)}
+                >
+                    <Icon
+                        name="dots-vertical"
+                        size={25}
+                        color={Colors.text_light}
+                    />
+                </TouchableOpacity>
             </CardSection>
+            <Menu
+                isModalVisible={isModalVisible}
+                toggleModal={toggleModal}
+                name={item.audioName}
+            />
         </TouchableOpacity>
     )
 }
@@ -42,7 +60,7 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
         paddingLeft: 20,
-        paddingRight: 20,
+        paddingRight: 10,
         marginBottom: 10,
         minWidth: '100%'
     },
@@ -65,5 +83,17 @@ const styles = StyleSheet.create({
     dateStyle: {
         fontSize: 14,
         color: Colors.price_same
-    }   
+    },
+    kebabStyle: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        paddingLeft: 10
+    },
+    modalViewStyle: {
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#FFF',
+        padding: 30
+    }
 });
