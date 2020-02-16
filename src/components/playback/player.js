@@ -19,16 +19,6 @@ export default function Playback(props) {
     const { changeIsPlaybackGoingOn, selectPlayback } = useContext(ActionContext);
     const { isPlaybackGoingOn, isRecordingGoingOn } = useContext(StateContext);
 
-    useEffect(() => {
-        // update isRecordingGoingOn value in the store
-        // so that all the components can pick it up
-        if (isPlaybackPlaying && !isPlaybackGoingOn) {
-            changeIsPlaybackGoingOn(true);
-        } else if (!isPlaybackPlaying && isPlaybackGoingOn) {
-            changeIsPlaybackGoingOn(false);
-        }
-    }, [isPlaybackGoingOn, isPlaybackPlaying]);
-
     // This function will be used as a callback to "play"
     // Gets invoked whenever a playback finishes playing
     const playComplete = (success) => {
@@ -67,7 +57,7 @@ export default function Playback(props) {
     // otherwise, load the sound and then play it.
     const playSound = () => {
         try {
-            if (playbackInstance) {
+            if (playbackInstance && playbackInstance.isLoaded()) {
                 // basically means, resume
                 // we already have a loaded playbackInstance, we just need to play it
                 console.log('A loaded sound found. Playing it.');
@@ -101,7 +91,6 @@ export default function Playback(props) {
                                 // Play the sound with an onEnd callback
                                 await playbackObject.play(playComplete);
 
-                                console.log('Setting isPlaybackGoingOn to true.');
                                 setIsPlaybackPlaying(true);
 
                                 // track the playback progress
@@ -115,73 +104,86 @@ export default function Playback(props) {
         catch (err) {
             console.log(err);
         }
+    };
+
+    /**
+     * Function to stop the playing playback, and stop tracking
+     * the playback progress.
+     */
+    const stopPlayer = async () => {
+        if (isPlaybackPlaying) {
+            await playbackInstance.stop();
+            setIsPlaybackPlaying(false);
+            setPlaybackPosition(null);
+            console.log('A playing sound found. Stopped.');
+        }
+        // stop tracking the playback progress
+        if (playbackProgress) {
+            clearInterval(playbackProgress);
+            playbackProgress = null;
+        }
     }
 
+    /**
+     * Function to clear all the state values, stop the player
+     * and release the audio resource that was loaded earlier
+     */
+    const resetAndClearPlayer = async () => {
+        if (playbackInstance && playbackInstance.isLoaded()) {
+            await stopPlayer();
+            await playbackInstance.release();
+            setIsPlaybackLoaded(false);
+            setPlaybackDuration(null);
+            setPlaybackInstance(null);
+        }
+    };
+
     useEffect(() => {
+        // update isRecordingGoingOn value in the store
+        // so that all the components can pick it up
+        if (isPlaybackPlaying && !isPlaybackGoingOn) {
+            changeIsPlaybackGoingOn(true);
+        } else if (!isPlaybackPlaying && isPlaybackGoingOn) {
+            changeIsPlaybackGoingOn(false);
+        }
+    }, [isPlaybackGoingOn, isPlaybackPlaying]);
+
+    useEffect(() => {
+        // stop and remove currently playing instance if available
+        (async () => {
+            await resetAndClearPlayer();
+            // immediately play the sound whenever the selected sound changes
+            // do not wait for the user to click on the play button
+            if (props.selectedPlayback) {
+                playSound();
+            }
+        })();
+
         // if this component is being umounted due to any reasons,
         // stop is playing, and release the loaded resource
-        return () => {
-            if (playbackProgress) {
-                clearInterval(playbackProgress);
-                playbackProgress = null;
-            }
-
-            if (playbackInstance) {
-                console.log('Removed but still loaded')
-                if (isPlaybackGoingOn) {
-                    console.log('removed but still playing')
-                    playbackInstance.stop();
-                }
-                if (playbackInstance.isLoaded()) {
-                    console.log('Removed and should be released')
-                    playbackInstance.release();
-                }
-            }
-        }
-    }, [])
-
-    useEffect(() => {
-        // immediately play the sound whenever the selected sound changes
-        // do not wait for the user to click on the play button
-        if (props.selectedPlayback) {
-            // stop and remove currently playing instance if available
-            (async () => {
-                if (playbackInstance) {
-                    await playbackInstance.stop();
-                    await playbackInstance.release();
-                }
-            })();
-            playSound();
-        }
+        return () => resetAndClearPlayer();
     }, [props.selectedPlayback]);
 
     useEffect(() => {
         // if the recording has started while the audio is playing,
         // stop playing, release the resource and reset all the state values
-        (async () => {
-            if (isRecordingGoingOn && playbackInstance) {
-                await playbackInstance.release();
-
-                // stop tracking the playback progress
-                if (playbackProgress) {
-                    clearInterval(playbackProgress);
-                    playbackProgress = null;
-                }
-
-                setIsPlaybackPlaying(false);
-                setPlaybackDuration(null);
-                setPlaybackPosition(null);
-                setIsPlaybackLoaded(false);
-                setPlaybackInstance(null);
-            }
-        })();
+        if (isRecordingGoingOn && playbackInstance) {
+            resetAndClearPlayer();
+        }
     }, [isRecordingGoingOn, isPlaybackGoingOn]);
 
+    /**
+     * Function to play a sound. Resume if it's already loaded and
+     * playing. Load and play a sound if not.
+     */
     const onPlayPress = async () => {
         console.log('Playback play pressed.');
         playSound();
     };
 
+    /**
+     * Function to pause a playing audio
+     */
     const onPausePress = async () => {
         console.log('Playback pause pressed.');
 
@@ -191,44 +193,22 @@ export default function Playback(props) {
         }
     };
 
+    /**
+     * Function to completely stop a playing sound but do
+     * not release the loaded resource.
+     */
     const onStopPress = async () => {
         console.log('Playback stop pressed.');
-
-        // stop tracking the playback progress
-        if (playbackProgress) {
-            clearInterval(playbackProgress);
-            playbackProgress = null;
-        }
-
-        if (isPlaybackGoingOn) {
-            await playbackInstance.stop();
-
-            setIsPlaybackPlaying(false);
-            setPlaybackPosition(null);
-
-            console.log('A playing sound found. Stopped.');
-        }
+        await stopPlayer();
     };
 
+    /**
+     * Function to stop the playing sound, release the resource,
+     * and finally close the player
+     */
     const onClosePress = async () => {
         console.log('Close button pressed on the player.');
-        // stop tracking the playback progress
-        if (playbackProgress) {
-            clearInterval(playbackProgress);
-            playbackProgress = null;
-        }
-
-        if (isPlaybackPlaying) {
-            await playbackInstance.stop();
-            await playbackInstance.release();
-            setIsPlaybackPlaying(false);
-            setPlaybackDuration(null);
-            setPlaybackPosition(null);
-            setIsPlaybackLoaded(false);
-            setPlaybackInstance(null);
-
-            console.log('A playing sound found. Stopped.');
-        }
+        await resetAndClearPlayer();
         selectPlayback(null);
     }
 
