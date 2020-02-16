@@ -4,6 +4,13 @@ import { StateContext, ActionContext } from '../../AppContext';
 import EachPlaybackItem from './eachPlaybackItem';
 import { getAudioFilesList } from '../../utils/fileManagement';
 
+const supportedAudioFormats = {
+    'mp3': true,
+    'mp4': true,
+    'wav': true,
+    'js': false
+};
+
 export default function PlaybackList(props) {
     const { playbacks } = useContext(StateContext);
     const { addAudioToStore } = useContext(ActionContext);
@@ -12,17 +19,20 @@ export default function PlaybackList(props) {
         async function getFiles() {
             const results = await getAudioFilesList();
             if (!results.error) {
+                let fileNameSplit;
                 for (let file of results) {
-                    if (file.name && file.name.indexOf('.mp3') > -1) {
-                        const createDate = new Date(file.mtime.toString()).getTime();
-                        console.log(file)
-                        addAudioToStore({
-                            audioId: `Recording-${createDate}`,
-                            audioUri: file.path,
-                            audioName: file.name,
-                            audioDuration: null,
-                            audioCreated: createDate
-                        });
+                    if (file.name) {
+                        fileNameSplit = file.name.split('.');
+                        if (supportedAudioFormats[fileNameSplit[fileNameSplit.length - 1]]) {
+                            const createDate = new Date(file.mtime.toString()).getTime();
+                            addAudioToStore({
+                                audioId: `Recording-${createDate}`,
+                                audioUri: file.path,
+                                audioName: file.name,
+                                audioDuration: null,
+                                audioCreated: createDate
+                            });
+                        }
                     }
                 }
             }
