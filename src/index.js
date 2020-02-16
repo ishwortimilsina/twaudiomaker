@@ -1,7 +1,13 @@
 import React, { useReducer, useMemo, useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-import { requestRecordAudioPermission, checkRecordAudioPermission } from './utils/appPermissions';
+import {
+    checkRecordAudioPermission,
+    checkExtStorageReadPermission,
+    checkExtStorageWritePermission,
+    requestRecordAudioPermission,
+    requestExtStorageReadPermission,
+    requestExtStorageWritePermission } from './utils/appPermissions';
 import { StateContext, ActionContext } from './AppContext';
 import reducer from './store/reducer';
 import initialState from './store/initialState';
@@ -41,12 +47,23 @@ export default function Main(props) {
     // update 'havePermission' state value
     useEffect(() => {
         (async () => {
-            let isGranted = await checkRecordAudioPermission();
-            if (isGranted) {
+            let isAPGranted = await checkRecordAudioPermission();
+            let isESRPGranted = await checkExtStorageReadPermission();
+            let isESWPGranted = await checkExtStorageWritePermission();
+            if (isAPGranted && isESRPGranted && isESWPGranted) {
                 setPermissionStatus(true);
             } else {
-                let permission = await requestRecordAudioPermission();
-                if (permission) {
+                if (!isAPGranted) {
+                    isAPGranted = await requestRecordAudioPermission();
+                }
+                if (!isESRPGranted) {
+                    isESRPGranted = await requestExtStorageReadPermission();
+                }
+                if (!isESWPGranted) {
+                    isESWPGranted = await requestExtStorageWritePermission();
+                }
+                
+                if (isAPGranted && isESRPGranted && isESWPGranted) {
                     setPermissionStatus(true);
                 }
             }

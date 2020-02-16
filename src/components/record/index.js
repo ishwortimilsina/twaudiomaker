@@ -1,7 +1,8 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { AudioRecorder, AudioUtils } from 'react-native-audio';
+import { AudioRecorder } from 'react-native-audio';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import RNFS from 'react-native-fs';
 
 import { millToClockString } from '../../utils/datetime';
 import { ActionContext, StateContext } from '../../AppContext';
@@ -31,13 +32,13 @@ export default function Record(props) {
                 const time = new Date();
                 const stringDateTime = `${time.getMonth()}-${time.getDate()}-${time.getFullYear()} ${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}`;
 
-                const audioPath = AudioUtils.DocumentDirectoryPath + `/Recording ${stringDateTime}.mp3`;
+                const audioPath = RNFS.ExternalStorageDirectoryPath + `/recordings/tw audio maker/Recording ${stringDateTime}.wav`;
                 AudioRecorder.prepareRecordingAtPath(audioPath, {
-                    SampleRate: 22050,
+                    SampleRate: 44100,
                     Channels: 2,
-                    AudioQuality: "Low",
+                    AudioQuality: "high",
                     AudioEncoding: "aac",
-                    AudioEncodingBitRate: 32000
+                    AudioEncodingBitRate: 128000
                 });
 
                 await AudioRecorder.startRecording();
@@ -95,12 +96,11 @@ export default function Record(props) {
         try {
             if (_recording.current) {
                 const filePath = await _recording.current.stopRecording();
-                console.log(filePath)
+                const filePathSplit = filePath.split("/");
+
                 changeRecordSessionStarted(false);
                 changeIsRecording(false);
                 console.log('Recording session ended.');
-
-                const filePathSplit = filePath.split("/");
 
                 addAudioToStore({
                     audioId: `Recording-${Date.now()}`,

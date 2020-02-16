@@ -1,23 +1,22 @@
 import { request, check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
+const evaluateResults = (result) => {
+    switch (result) {
+        case RESULTS.UNAVAILABLE:
+        case RESULTS.DENIED:
+        case RESULTS.BLOCKED:
+            return false;
+            return false;
+        case RESULTS.GRANTED:
+            return true;
+            return true;
+    }
+}
+
 export async function checkRecordAudioPermission() {
     try {
         const result = await check(PERMISSIONS.ANDROID.RECORD_AUDIO);
-
-        switch (result) {
-            case RESULTS.UNAVAILABLE:
-                console.log('This feature is not available (on this device / in this context)');
-                return false;
-            case RESULTS.DENIED:
-                console.log('The permission is not given but requestable');
-                return false;
-            case RESULTS.GRANTED:
-                console.log('The permission is granted');
-                return true;
-            case RESULTS.BLOCKED:
-                console.log('The permission is denied and not requestable anymore');
-                return true;
-        }
+        return evaluateResults(result);
     } catch (err) {
         console.log('An error occured while checking for mic permission.');
         console.error(err);
@@ -36,23 +35,69 @@ export async function requestRecordAudioPermission() {
                 buttonPositive: 'Allow',
             },
         );
-        console.log(result)
-        switch (result) {
-            case RESULTS.UNAVAILABLE:
-                console.log('This feature is not available on this device.');
-                return false;
-            case RESULTS.DENIED:
-                console.log('The permission has been denied but requestable');
-                return false;
-            case RESULTS.GRANTED:
-                console.log('The permission has been granted');
-                return true;
-            case RESULTS.BLOCKED:
-                console.log('The permission has been denied and not requestable anymore');
-                return true;
-        }
+        return evaluateResults(result);
     } catch (err) {
         console.log('An error occured while asking for mic permission.');
+        console.error(err);
+        return false;
+    }
+}
+
+export async function checkExtStorageReadPermission() {
+    try {
+        const result = await check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+        return evaluateResults(result);
+    } catch (err) {
+        console.log('An error occured while checking for external storage read permission.');
+        console.error(err);
+        return false;
+    }
+}
+
+export async function requestExtStorageReadPermission() {
+    try {
+        const result = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+            {
+                title: 'Storage Read Permission',
+                message: 'TW Audio Maker needs read access to your storage.',
+                buttonNeutral: 'Ask me again',
+                buttonNegative: 'Deny',
+                buttonPositive: 'Allow',
+            },
+        );
+        return evaluateResults(result);
+    } catch (err) {
+        console.log('An error occured while asking for external storage read permission.');
+        console.error(err);
+        return false;
+    }
+}
+
+export async function checkExtStorageWritePermission() {
+    try {
+        const result = await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+        return evaluateResults(result);
+    } catch (err) {
+        console.log('An error occured while checking for external storage write permission.');
+        console.error(err);
+        return false;
+    }
+}
+
+export async function requestExtStorageWritePermission() {
+    try {
+        const result = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
+            {
+                title: 'Storage Write Permission',
+                message: 'TW Audio Maker needs read access to your storage.',
+                buttonNeutral: 'Ask me again',
+                buttonNegative: 'Deny',
+                buttonPositive: 'Allow',
+            },
+        );
+        return evaluateResults(result);
+    } catch (err) {
+        console.log('An error occured while asking for external storage write permission.');
         console.error(err);
         return false;
     }
