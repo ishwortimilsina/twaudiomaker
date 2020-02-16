@@ -15,6 +15,9 @@ export default function Main(props) {
     const addAudioToStore = (audio) => {
         dispatch({ type: 'addAudio', payload: audio });
     };
+    const removeAudioFromStore = (audioId) => {
+        dispatch({ type: 'removeAudio', audioId });
+    };
     const changeIsRecordingGoingOn = (isRecordingGoingOn) => {
         dispatch({ type: 'changeIsRecordingGoingOn', isRecordingGoingOn });
     };
@@ -27,6 +30,7 @@ export default function Main(props) {
 
     const actions = useMemo(() => ({
         addAudioToStore,
+        removeAudioFromStore,
         changeIsPlaybackGoingOn,
         changeIsRecordingGoingOn,
         selectPlayback

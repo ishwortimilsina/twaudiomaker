@@ -118,15 +118,40 @@ export default function Playback(props) {
     }
 
     useEffect(() => {
-        // immediately play the sound whenever the selected sound changes
-        // do not wait for the user to click on the play button
-        if (props.selectedPlayback) {
-            playSound();
-        } else {
+        // if this component is being umounted due to any reasons,
+        // stop is playing, and release the loaded resource
+        return () => {
             if (playbackProgress) {
                 clearInterval(playbackProgress);
                 playbackProgress = null;
             }
+
+            if (playbackInstance) {
+                console.log('Removed but still loaded')
+                if (isPlaybackGoingOn) {
+                    console.log('removed but still playing')
+                    playbackInstance.stop();
+                }
+                if (playbackInstance.isLoaded()) {
+                    console.log('Removed and should be released')
+                    playbackInstance.release();
+                }
+            }
+        }
+    }, [])
+
+    useEffect(() => {
+        // immediately play the sound whenever the selected sound changes
+        // do not wait for the user to click on the play button
+        if (props.selectedPlayback) {
+            // stop and remove currently playing instance if available
+            (async () => {
+                if (playbackInstance) {
+                    await playbackInstance.stop();
+                    await playbackInstance.release();
+                }
+            })();
+            playSound();
         }
     }, [props.selectedPlayback]);
 

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -17,6 +17,13 @@ export default function EachPlaybackItem(props) {
     const timeString = createdDate.toLocaleTimeString('en-US');
     const dateString = createdDate.toLocaleDateString('en-US');
     const durationString = millToClockString(audioDuration);
+
+    useEffect(() => {
+        return () => {
+            // if the component is being removed or unmounted, close the menu modal
+            toggleModal(false);
+        }
+    }, [])
 
     return (
         <TouchableOpacity
@@ -48,6 +55,7 @@ export default function EachPlaybackItem(props) {
                 isModalVisible={isModalVisible}
                 toggleModal={toggleModal}
                 name={item.audioName}
+                audioId={item.audioId}
             />
         </TouchableOpacity>
     )

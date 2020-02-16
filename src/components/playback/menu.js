@@ -1,20 +1,45 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import Modal from "react-native-modal";
 
 import { TouchableMenuItem } from '../common/touchableMenuItem';
 import { deleteAudioFile } from '../../utils/fileManagement';
+import { ActionContext } from '../../AppContext';
 
 export default function Menu(props) {
-    const { isModalVisible, toggleModal, name } = props;
+    const { isModalVisible, toggleModal, name, audioId } = props;
+    const { removeAudioFromStore } = useContext(ActionContext);
 
-    const onDeletePress = async () => {
-        console.log('Delete clicked.');
+    // Delete the audio file, and update the store
+    const onDeleteConfim = async () => {
         const result = await deleteAudioFile(name);
         if (result.error) {
             console.log(result.error.message);
+        } else {
+            removeAudioFromStore(audioId);
         }
-        toggleModal(false);
+    };
+
+    // on Delete menu item press, ask for confimation. If confirmed,
+    // call onDeleteConfirm to actually delete the file
+    const onDeletePress = () => {
+        console.log('Delete clicked.');
+        Alert.alert(
+            'Confirm',
+            `Are you sure you want to delete "${name}"?`,
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => toggleModal(false),
+                    style: 'cancel',
+                },
+                {
+                    text: 'YES',
+                    onPress: onDeleteConfim
+                },
+            ],
+            {cancelable: true},
+        );
     };
 
     return (
