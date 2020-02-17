@@ -1,6 +1,6 @@
 import RNFS from 'react-native-fs';
 
-const storageDirectory = RNFS.ExternalStorageDirectoryPath + '/recordings/tw audio maker/';
+const storageDirectory = RNFS.ExternalStorageDirectoryPath + '/recordings/music recordings/';
 
 // get a list of files and directories in the document path
 export function getAudioFilesList() {
@@ -8,6 +8,9 @@ export function getAudioFilesList() {
         RNFS.readDir(storageDirectory)
             .then((result) => {
                 resolve(result);
+                // result[0] && RNFS.readFile(result[0].path, "base64")
+                //     .then((res) => console.log(res))
+                //     .catch((err) => console.log(err));
             })
             .catch((err) => {
                 resolve({

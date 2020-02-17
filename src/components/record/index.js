@@ -4,6 +4,7 @@ import { AudioRecorder } from 'react-native-audio';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNFS from 'react-native-fs';
 
+import { audioQualityMap } from '../../constants/audioQualities';
 import { millToClockString } from '../../utils/datetime';
 import { ActionContext, StateContext } from '../../AppContext';
 
@@ -13,7 +14,7 @@ export default function Record(props) {
     const [ isRecording, changeIsRecording ] = useState(false);
     const [ recordingDuration, setRecordingDuration ] = useState(0);
     const { addAudioToStore, changeIsRecordingGoingOn } = useContext(ActionContext);
-    const { isRecordingGoingOn } = useContext(StateContext);
+    const { isRecordingGoingOn, recordingQuality } = useContext(StateContext);
 
     useEffect(() => {
         // update isRecordingGoingOn value in the store
@@ -31,14 +32,15 @@ export default function Record(props) {
             try {
                 const time = new Date();
                 const stringDateTime = `${time.getMonth()}-${time.getDate()}-${time.getFullYear()} ${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}`;
+                const { encoding, bitRate, channels, sampleRate, quality } = audioQualityMap[recordingQuality];
 
-                const audioPath = RNFS.ExternalStorageDirectoryPath + `/recordings/tw audio maker/Recording ${stringDateTime}.wav`;
+                const audioPath = RNFS.ExternalStorageDirectoryPath + `/recordings/music recordings/Recording ${stringDateTime}.aac`;
                 AudioRecorder.prepareRecordingAtPath(audioPath, {
-                    SampleRate: 44100,
-                    Channels: 2,
-                    AudioQuality: "high",
-                    AudioEncoding: "aac",
-                    AudioEncodingBitRate: 128000
+                    SampleRate: sampleRate,
+                    Channels: channels,
+                    AudioQuality: quality,
+                    AudioEncoding: encoding,
+                    AudioEncodingBitRate: bitRate
                 });
 
                 await AudioRecorder.startRecording();
