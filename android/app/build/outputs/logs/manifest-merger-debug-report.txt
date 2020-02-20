@@ -15,6 +15,7 @@ MERGED from [:react-native-safe-area-context] /home/ishwor/Apps/twaudiomaker/nod
 MERGED from [:react-native-gesture-handler] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-gesture-handler/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:@react-native-community_masked-view] /home/ishwor/Apps/twaudiomaker/node_modules/@react-native-community/masked-view/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [:react-native-reanimated] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-reanimated/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
+MERGED from [:react-native-media-metadata-retriever] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-media-metadata-retriever/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-18:12
 MERGED from [:react-native-permissions] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-permissions/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [com.facebook.react:react-native:0.61.5] /home/ishwor/.gradle/caches/transforms-2/files-2.1/ad52d7ac70417f79d897fbe9c61f9a53/AndroidManifest.xml:2:1-13:12
 MERGED from [org.webkit:android-jsc:r245459] /home/ishwor/.gradle/caches/transforms-2/files-2.1/027ddf2e2bf7f70af39248b621aeb228/AndroidManifest.xml:2:1-11:12
@@ -82,6 +83,8 @@ INJECTED from /home/ishwor/Apps/twaudiomaker/android/app/src/debug/AndroidManife
 		ADDED from /home/ishwor/Apps/twaudiomaker/android/app/src/main/AndroidManifest.xml:1:11-69
 uses-permission#android.permission.INTERNET
 ADDED from /home/ishwor/Apps/twaudiomaker/android/app/src/main/AndroidManifest.xml:4:5-67
+MERGED from [:react-native-media-metadata-retriever] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-media-metadata-retriever/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-67
+MERGED from [:react-native-media-metadata-retriever] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-media-metadata-retriever/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-67
 	android:name
 		ADDED from /home/ishwor/Apps/twaudiomaker/android/app/src/main/AndroidManifest.xml:4:22-64
 uses-permission#android.permission.RECORD_AUDIO
@@ -102,6 +105,8 @@ application
 ADDED from /home/ishwor/Apps/twaudiomaker/android/app/src/main/AndroidManifest.xml:9:5-27:19
 MERGED from /home/ishwor/Apps/twaudiomaker/android/app/src/main/AndroidManifest.xml:9:5-27:19
 MERGED from /home/ishwor/Apps/twaudiomaker/android/app/src/main/AndroidManifest.xml:9:5-27:19
+MERGED from [:react-native-media-metadata-retriever] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-media-metadata-retriever/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:13:5-16:32
+MERGED from [:react-native-media-metadata-retriever] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-media-metadata-retriever/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:13:5-16:32
 MERGED from [com.facebook.react:react-native:0.61.5] /home/ishwor/.gradle/caches/transforms-2/files-2.1/ad52d7ac70417f79d897fbe9c61f9a53/AndroidManifest.xml:11:5-20
 MERGED from [com.facebook.react:react-native:0.61.5] /home/ishwor/.gradle/caches/transforms-2/files-2.1/ad52d7ac70417f79d897fbe9c61f9a53/AndroidManifest.xml:11:5-20
 MERGED from [com.google.android.material:material:1.0.0] /home/ishwor/.gradle/caches/transforms-2/files-2.1/6bcda438356e01cd5a28f80697e32553/AndroidManifest.xml:22:5-20
@@ -186,6 +191,8 @@ MERGED from [:@react-native-community_masked-view] /home/ishwor/Apps/twaudiomake
 MERGED from [:@react-native-community_masked-view] /home/ishwor/Apps/twaudiomaker/node_modules/@react-native-community/masked-view/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-reanimated] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-reanimated/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-reanimated] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-reanimated/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-media-metadata-retriever] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-media-metadata-retriever/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:6:5-8:41
+MERGED from [:react-native-media-metadata-retriever] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-media-metadata-retriever/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:6:5-8:41
 MERGED from [:react-native-permissions] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-permissions/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-permissions] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-permissions/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [com.facebook.react:react-native:0.61.5] /home/ishwor/.gradle/caches/transforms-2/files-2.1/ad52d7ac70417f79d897fbe9c61f9a53/AndroidManifest.xml:7:5-9:41
@@ -286,5 +293,7 @@ INJECTED from /home/ishwor/Apps/twaudiomaker/android/app/src/debug/AndroidManife
 		INJECTED from /home/ishwor/Apps/twaudiomaker/android/app/src/debug/AndroidManifest.xml
 uses-permission#android.permission.SYSTEM_ALERT_WINDOW
 ADDED from /home/ishwor/Apps/twaudiomaker/android/app/src/debug/AndroidManifest.xml:5:5-77
+MERGED from [:react-native-media-metadata-retriever] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-media-metadata-retriever/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:10:5-78
+MERGED from [:react-native-media-metadata-retriever] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-media-metadata-retriever/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:10:5-78
 	android:name
 		ADDED from /home/ishwor/Apps/twaudiomaker/android/app/src/debug/AndroidManifest.xml:5:22-75

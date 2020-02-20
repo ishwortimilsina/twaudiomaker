@@ -24,6 +24,8 @@ import com.rnim.rn.audio.ReactNativeAudioPackage;
 import com.rnfs.RNFSPackage;
 // react-native-gesture-handler
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+// react-native-media-metadata-retriever
+import com.rnmediametadataretriever.RNMediaMetadataRetrieverPackage;
 // react-native-permissions
 import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 // react-native-reanimated
@@ -86,6 +88,7 @@ public class PackageList {
       new ReactNativeAudioPackage(),
       new RNFSPackage(),
       new RNGestureHandlerPackage(),
+      new RNMediaMetadataRetrieverPackage(),
       new RNPermissionsPackage(),
       new ReanimatedPackage(),
       new SafeAreaContextPackage(),

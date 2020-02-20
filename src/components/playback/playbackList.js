@@ -25,12 +25,13 @@ export default function PlaybackList(props) {
                     if (file.name) {
                         fileNameSplit = file.name.split('.');
                         if (supportedAudioFormats[fileNameSplit[fileNameSplit.length - 1]]) {
+                            console.log(file)
                             const createDate = new Date(file.mtime.toString()).getTime();
                             addAudioToStore({
                                 audioId: `Recording-${createDate}`,
                                 audioUri: file.path,
                                 audioName: file.name,
-                                audioDuration: null,
+                                audioDuration: file.duration || 0,
                                 audioCreated: createDate
                             });
                         }
