@@ -22,40 +22,59 @@ const getWaveMetadata = (path) => {
             //bits_per_sample     35-36
 
             buffer = Buffer.from(result, 'ascii').toString('hex').match(/.{1,2}/g);
-            const chunk_size = parseInt(buffer.slice(4, 8).reverse().join(""), 16);
             const sample_rate = parseInt(buffer.slice(24, 28).reverse().join(""), 16);
             const num_channels = parseInt(buffer.slice(22, 24).reverse().join(""), 16);
-            const bits_per_sample = parseInt(buffer.slice(34, 36).reverse().join(""), 16);
+            const bit_rate = parseInt(buffer.slice(34, 36).reverse().join(""), 16);
 
-            const duration = parseInt(chunk_size / (sample_rate * num_channels * (bits_per_sample / 8))) * 1000;
             resolve({
                 sample_rate,
                 num_channels,
-                bits_per_sample,
-                duration
+                bit_rate
             });
         })
         .catch((err) => {
             console.log(err.message);
             resolve({
-                sample_rate: null,
-                num_channels: null,
-                bits_per_sample: null,
-                duration: 0
+                sample_rate: 0,
+                num_channels: 0,
+                bit_rate: 0
             })
         });
     });
 }
 
+/**
+ * Function that fetches metadata of the audiofile that resides at the provided path
+ * @param {string} path 
+ */
 const getMetadata = (path) => {
     return new Promise((resolve, reject) => {
         RNMediaMetadataRetriever.getMetadata(path)
-            .then((info) => {
-                const { duration, ...restInfo } = info;
+            .then(async (info) => {
+                let {
+                    duration,
+                    mime_type,
+                    sample_rate,
+                    num_channels,
+                    bit_rate } = info;
+
+                duration = (duration && Number(duration) == duration) ? Number(duration) : 0
+                
+                // for wave file, this api won't return some data points
+                // so we use our own metadata extractor
+                if (mime_type.indexOf('wav') > -1) {
+                    const waveMeta = await getWaveMetadata(path);
+                    ({sample_rate, num_channels, bit_rate } = waveMeta);
+                }
+
                 resolve({
                     error: null,
                     data: {
-                        duration: (duration && Number(duration) == duration) ? Number(duration) : 0
+                        ...info,
+                        duration,
+                        sample_rate,
+                        num_channels,
+                        bit_rate
                     }
                 });
             })
@@ -63,7 +82,15 @@ const getMetadata = (path) => {
                 resolve({
                     error: error,
                     data: {
-                        duration: 0
+                        duration: 0,
+                        album: null,
+                        artist: null,
+                        bit_rate: 0,
+                        genre: null,
+                        mime_type: null,
+                        num_channels: 0,
+                        sample_rate: 0,
+                        title: null
                     }
                 })
             })
@@ -73,6 +100,7 @@ const getMetadata = (path) => {
 // get a list of files and directories in the document path
 export async function getAudioFilesList() {
     return new Promise((resolve, reject) => {
+
         RNFS.readDir(storageDirectory)
         .then(async (result) => {
             const files = [];
@@ -83,8 +111,12 @@ export async function getAudioFilesList() {
                 if (metaInfo.error) {
                     console.log(metaInfo.error);
                 }
-                files.push({ ...file, ...metaInfo.data });
+
+                let { isFile, isDirectory, ...fileMeta } = file;
+
+                files.push({ ...fileMeta, ...metaInfo.data });
             }
+
             resolve(files);
         })
         .catch((err) => {
