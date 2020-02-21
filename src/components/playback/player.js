@@ -240,6 +240,17 @@ export default function Playback(props) {
         };
     };
 
+    const setSeekPosition = (percentage) => {
+        if (
+            playbackInstance != null &&
+            playbackPosition != null &&
+            playbackDuration
+        ) {
+            const newPosition = percentage * playbackDuration / 1000;
+            playbackInstance.setCurrentTime(newPosition);
+        }
+    };
+
     const { remTime, totTime } = getPlaybackTimestamp();
 
     return (
@@ -263,6 +274,7 @@ export default function Playback(props) {
             <Slider
                 style={styles.playbackSlider}
                 value={getSeekSliderPosition()}
+                onValueChange={setSeekPosition}
                 disabled={false}
             />
             <View style={styles.playbackTimestampContainer}>
