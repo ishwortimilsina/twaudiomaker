@@ -10,6 +10,14 @@ const reducer = (state, action) => {
                     }
                 }
             };
+        case 'addMultiAudios':
+            return {
+                ...state,
+                playbacks: {
+                    ...state.playbacks,
+                    ...action.payload
+                }
+            };
         case 'removeAudio':
             let newPlaybacks = {};
 

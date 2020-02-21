@@ -1,19 +1,19 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { AudioRecorder } from 'react-native-audio';
+import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
+import { AudioRecorder, AudioUtils } from 'react-native-audio';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import RNFS from 'react-native-fs';
 
 import { audioQualityMap } from '../../constants/audioQualities';
 import { millToClockString } from '../../utils/datetime';
 import { ActionContext, StateContext } from '../../AppContext';
+import { moveFileToStorageDir } from '../../utils/fileManagement';
 
 export default function Record(props) {
     const _recording = useRef(null);
     const [ recordSessionStarted, changeRecordSessionStarted ] = useState(false);
     const [ isRecording, changeIsRecording ] = useState(false);
     const [ recordingDuration, setRecordingDuration ] = useState(0);
-    const { addAudioToStore, changeIsRecordingGoingOn } = useContext(ActionContext);
+    const { changeIsRecordingGoingOn } = useContext(ActionContext);
     const { isRecordingGoingOn, recordingQuality } = useContext(StateContext);
 
     useEffect(() => {
@@ -34,7 +34,7 @@ export default function Record(props) {
                 const stringDateTime = `${time.getMonth()}-${time.getDate()}-${time.getFullYear()} ${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}`;
                 const { encoding, bitRate, channels, sampleRate, quality } = audioQualityMap[recordingQuality];
 
-                const audioPath = RNFS.ExternalStorageDirectoryPath + `/recordings/music recordings/Recording ${stringDateTime}.aac`;
+                const audioPath = AudioUtils.DocumentDirectoryPath + `/Recording ${stringDateTime}.aac`;
                 AudioRecorder.prepareRecordingAtPath(audioPath, {
                     SampleRate: sampleRate,
                     Channels: channels,
@@ -98,19 +98,13 @@ export default function Record(props) {
         try {
             if (_recording.current) {
                 const filePath = await _recording.current.stopRecording();
-                const filePathSplit = filePath.split("/");
-
                 changeRecordSessionStarted(false);
                 changeIsRecording(false);
                 console.log('Recording session ended.');
 
-                addAudioToStore({
-                    audioId: `Recording-${Date.now()}`,
-                    audioUri: filePath,
-                    audioName: filePathSplit[filePathSplit.length - 1],
-                    audioDuration: recordingDuration,
-                    audioCreated: Date.now()
-                });
+                // move the file to storage directory and let user know about saving
+                await moveFileToStorageDir(filePath);
+                ToastAndroid.show('Recording saved.', ToastAndroid.SHORT);
             } else {
                 console.log('No prepared recording found to stop.');
             }

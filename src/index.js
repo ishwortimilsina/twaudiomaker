@@ -21,6 +21,9 @@ export default function Main(props) {
     const addAudioToStore = (audio) => {
         dispatch({ type: 'addAudio', payload: audio });
     };
+    const addMultiAudiosToStore = (audios) => {
+        dispatch({ type: 'addMultiAudios', payload: audios });
+    }
     const removeAudioFromStore = (audioId) => {
         dispatch({ type: 'removeAudio', audioId });
     };
@@ -36,6 +39,7 @@ export default function Main(props) {
 
     const actions = useMemo(() => ({
         addAudioToStore,
+        addMultiAudiosToStore,
         removeAudioFromStore,
         changeIsPlaybackGoingOn,
         changeIsRecordingGoingOn,

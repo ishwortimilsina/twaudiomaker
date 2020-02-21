@@ -2,7 +2,7 @@ import RNFS from 'react-native-fs';
 import {Buffer} from 'buffer';
 import RNMediaMetadataRetriever from 'react-native-media-metadata-retriever';
 
-const storageDirectory = RNFS.ExternalStorageDirectoryPath + '/recordings/music recordings/';
+export const storageDirectory = RNFS.ExternalStorageDirectoryPath + '/recordings/music recordings/';
 
 /**
  * Function to get sample_rate, number of channels, bits per sample and duration of a wav audio file
@@ -19,17 +19,20 @@ const getWaveMetadata = (path) => {
             //chunk_size         5-6-7-8
             //sample_rate        25-26-27-28
             //num_channels       23-24
+            //byte_rate           29-32
             //bits_per_sample     35-36
 
             buffer = Buffer.from(result, 'ascii').toString('hex').match(/.{1,2}/g);
             const sample_rate = parseInt(buffer.slice(24, 28).reverse().join(""), 16);
             const num_channels = parseInt(buffer.slice(22, 24).reverse().join(""), 16);
-            const bit_rate = parseInt(buffer.slice(34, 36).reverse().join(""), 16);
+            const bit_rate = parseInt(buffer.slice(28, 32).reverse().join(""), 16) * 8; // bytes * 8 = bits
+            const bits_per_sample = parseInt(buffer.slice(34, 36).reverse().join(""), 16);
 
             resolve({
                 sample_rate,
                 num_channels,
-                bit_rate
+                bit_rate,
+                bits_per_sample
             });
         })
         .catch((err) => {
@@ -37,7 +40,8 @@ const getWaveMetadata = (path) => {
             resolve({
                 sample_rate: 0,
                 num_channels: 0,
-                bit_rate: 0
+                bit_rate: 0,
+                bits_per_sample
             })
         });
     });
@@ -56,6 +60,7 @@ const getMetadata = (path) => {
                     mime_type,
                     sample_rate,
                     num_channels,
+                    bits_per_sample,
                     bit_rate } = info;
 
                 duration = (duration && Number(duration) == duration) ? Number(duration) : 0
@@ -64,7 +69,7 @@ const getMetadata = (path) => {
                 // so we use our own metadata extractor
                 if (mime_type.indexOf('wav') > -1) {
                     const waveMeta = await getWaveMetadata(path);
-                    ({sample_rate, num_channels, bit_rate } = waveMeta);
+                    ({ sample_rate, num_channels, bit_rate, bits_per_sample } = waveMeta);
                 }
 
                 resolve({
@@ -74,7 +79,8 @@ const getMetadata = (path) => {
                         duration,
                         sample_rate,
                         num_channels,
-                        bit_rate
+                        bit_rate,
+                        bits_per_sample: bits_per_sample || 16
                     }
                 });
             })
@@ -86,6 +92,7 @@ const getMetadata = (path) => {
                         album: null,
                         artist: null,
                         bit_rate: 0,
+                        bits_per_sample: 0,
                         genre: null,
                         mime_type: null,
                         num_channels: 0,
@@ -154,14 +161,12 @@ export function deleteAudioFile(fileName) {
 }
 
 // move files from one location to another
-export function moveFile(fileName, destinationPath) {
+export function moveFile(sourcePath, destinationPath) {
     return new Promise((resolve, reject) => {
-        const sourcePath = storageDirectory + fileName;
-        const fullDestinationPath = destinationPath + '/' + fileName;
 
-        RNFS.moveFile(sourcePath, fullDestinationPath)
+        RNFS.moveFile(sourcePath, destinationPath)
             .then(() => {
-                console.log(`FILE "${fileName}" MOVED to ${destinationPath}`);
+                console.log(`FILE "${sourcePath}" MOVED to ${destinationPath}`);
                 resolve({
                     success:true,
                     destinationPath,
@@ -179,4 +184,14 @@ export function moveFile(fileName, destinationPath) {
                 });
             });
     });
+}
+
+/**
+ * Function to move a file to our storage directory location
+ * @param {string} filePath
+ */
+export async function moveFileToStorageDir(filePath) {
+    const fileName = filePath.split('/').pop();
+    const destinationPath = storageDirectory + fileName;
+    return moveFile(filePath, destinationPath);
 }
