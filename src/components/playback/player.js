@@ -359,6 +359,7 @@ const styles = StyleSheet.create({
     },
     closeButton: {
         alignSelf: 'flex-end',
+        padding: 5,
         top: -20
     },
     controlButtons: {

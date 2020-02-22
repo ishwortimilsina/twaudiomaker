@@ -6,7 +6,7 @@ import { CardSection } from '../common';
 import * as Colors from '../../themes/Colors';
 import { millToClockString } from '../../utils/datetime';
 import { ActionContext } from '../../AppContext';
-import Menu from './menu';
+import Menu from '../menu';
 
 export default function EachPlaybackItem(props) {
     const { item } = props;
@@ -54,8 +54,7 @@ export default function EachPlaybackItem(props) {
             <Menu
                 isModalVisible={isModalVisible}
                 toggleModal={toggleModal}
-                name={item.audioName}
-                audioId={item.audioId}
+                item={item}
             />
         </TouchableOpacity>
     )
@@ -97,11 +96,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'flex-end',
         paddingLeft: 10
-    },
-    modalViewStyle: {
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: '#FFF',
-        padding: 30
     }
 });
