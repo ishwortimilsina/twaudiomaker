@@ -5,11 +5,6 @@ import Modal from "react-native-modal";
 import PlaybackMenu from './playbackMenu';
 import DetailsMenu from './detailsMenu';
 
-const ActiveMenu = {
-    'main': PlaybackMenu,
-    'details': DetailsMenu
-};
-
 export default function Menu(props) {
     const { isModalVisible, toggleModal, item } = props;
     const [ activeMenu, setActiveMenu ] = useState('main');

@@ -61,9 +61,9 @@ export default function PlaybackList(props) {
                 addMultiAudiosToStore(audioArray);
             }
         }
-        const filesGetter = setInterval(audioFilesGetter, 5000);
+        // const filesGetter = setInterval(audioFilesGetter, 5000);
 
-        return () => clearInterval(filesGetter);
+        // return () => clearInterval(filesGetter);
     }, []);
 
     useEffect(() => {

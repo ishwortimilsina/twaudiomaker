@@ -1,5 +1,4 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import Record from './record';
@@ -9,17 +8,15 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function Home(props) {
     return (
-        <NavigationContainer>
-            <Tab.Navigator>
-                <Tab.Screen
-                    name="Record"
-                    component={Record}
-                />
-                <Tab.Screen
-                    name="Recordings"
-                    component={Playback}
-                />
-            </Tab.Navigator>
-        </NavigationContainer>
+        <Tab.Navigator>
+            <Tab.Screen
+                name="Record"
+                component={Record}
+            />
+            <Tab.Screen
+                name="Recordings"
+                component={Playback}
+            />
+        </Tab.Navigator>
     );
 }

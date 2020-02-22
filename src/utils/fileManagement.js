@@ -120,7 +120,7 @@ export async function getAudioFilesList() {
                 }
 
                 let { isFile, isDirectory, ...fileMeta } = file;
-
+                
                 files.push({ ...fileMeta, ...metaInfo.data });
             }
 
