@@ -9,5 +9,5 @@ export const text_light = '#d9d9d9';
 export const text_medium = '#455a64';
 export const text_dark = '#263238';
 export const home_card = '#455a64';
-export const button_red_medium = '#F2270C';
+export const button_red_medium = '#F21B27';
 export const date_time_medium = '#FFBF48';

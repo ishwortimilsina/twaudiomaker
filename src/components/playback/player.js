@@ -251,10 +251,44 @@ export default function Playback(props) {
         }
     };
 
+    // rewind 10 seconds
+    // if rewinding 10 secs becomes less than 0, rewind upto the beginning
+    const onRewind = () => {
+        console.log('Rewind button clicked');
+        if (
+            playbackInstance != null &&
+            playbackPosition != null &&
+            playbackDuration &&
+            playbackPosition > 500
+        ) {
+            let newPosition = (playbackPosition - 10000) / 1000;
+            newPosition = newPosition <= 0.5 ? 0 : newPosition;
+            playbackInstance.setCurrentTime(newPosition);
+        }
+    };
+
+    // fast-forward 10 seconds
+    // if fast-forwarding 10 secs becomes larges than the total duration,
+    // fast forward upto the duration
+    const onFastForward = () => {
+        console.log('Fast-forward button clicked');
+        if (
+            playbackInstance != null &&
+            playbackPosition != null &&
+            playbackDuration &&
+            playbackPosition !== playbackDuration
+        ) {
+            let newPosition = (playbackPosition + 10000) / 1000;
+            const durationSec = Math.ceil(playbackDuration / 1000);
+            newPosition = newPosition <= durationSec ? newPosition : durationSec;
+            playbackInstance.setCurrentTime(newPosition);
+        }
+    };
+
     const { remTime, totTime } = getPlaybackTimestamp();
 
     return (
-        <CardSection style={styles.controlsContainer}>
+        <CardSection style={styles.playerContainer}>
             <TouchableOpacity
                 style={styles.closeButton}
                 onPress={onClosePress}
@@ -262,7 +296,7 @@ export default function Playback(props) {
                 <Icon
                     name="close-circle"
                     size={40}
-                    color="black"
+                    color={Colors.background_light}
                 />
             </TouchableOpacity>
             <Text
@@ -289,6 +323,16 @@ export default function Playback(props) {
                 </Text>
             </View>
             <View style={styles.buttonsContainer}>
+                <TouchableOpacity
+                    style={styles.controlButtons}
+                    onPress={onRewind}
+                >
+                    <Icon
+                        name="rewind-10"
+                        size={30}
+                        color={Colors.background_light}
+                    />
+                </TouchableOpacity>
                 {
                     isPlaybackPlaying ? (
                         <TouchableOpacity
@@ -316,13 +360,22 @@ export default function Playback(props) {
                 }
                 <TouchableOpacity
                     style={styles.controlButtons}
+                    onPress={onFastForward}
+                >
+                    <Icon
+                        name="fast-forward-10"
+                        size={30}
+                        color={Colors.background_light}
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.controlButtons}
                     onPress={onStopPress}
-                    disabled={!isPlaybackGoingOn}
                 >
                     <Icon
                         name="stop"
-                        size={50}
-                        color={isPlaybackGoingOn ? Colors.background_light : Colors.background_dark}
+                        size={40}
+                        color={Colors.background_light}
                     />
                 </TouchableOpacity>
             </View>
@@ -331,19 +384,21 @@ export default function Playback(props) {
 }
 
 const styles = StyleSheet.create({
-    controlsContainer: {
+    playerContainer: {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 30,
         alignSelf: 'stretch',
-        backgroundColor: Colors.background_medium
+        backgroundColor: Colors.background_medium,
+        elevation: 3
     },
     buttonsContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        margin: 10
+        margin: 10,
+        marginTop: 20
     },
     playbackSlider: {
         alignSelf: 'stretch'
@@ -371,11 +426,11 @@ const styles = StyleSheet.create({
         marginTop: -20
     },
     nameStyle: {
-        marginBottom: 10,
+        marginBottom: 20,
         marginTop: -30,
         padding: 5,
-        alignSelf: 'flex-start',
+        alignSelf: 'center',
         color: Colors.text_light,
-        fontSize: 16
+        fontSize: 18
     }
 });
