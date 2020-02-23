@@ -3,18 +3,30 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 import Record from './record';
 import Playback from './playback';
+import * as Colors from '../themes/Colors';
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function Home(props) {
     return (
-        <Tab.Navigator>
+        <Tab.Navigator
+            tabBarOptions={{
+                labelStyle: {
+                    fontSize: 14,
+                    fontWeight: 'bold'
+                },
+                style: {
+                    backgroundColor: Colors.background_dark,
+                },
+                activeTintColor: Colors.text_light
+            }}
+        >
             <Tab.Screen
-                name="Record"
+                name="Record "
                 component={Record}
             />
             <Tab.Screen
-                name="Recordings"
+                name="Recordings  "
                 component={Playback}
             />
         </Tab.Navigator>

@@ -4,6 +4,7 @@ import { View, StyleSheet } from 'react-native';
 import { StateContext } from '../../AppContext';
 import PlaybackList from './playbackList';
 import Player from './player';
+import * as Colors from '../../themes/Colors';
 
 export default function Playback(props) {
     const { selectedPlayback } = useContext(StateContext);
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flex: 1,
-        margin: 10,
-        backgroundColor: '#fff',
+        padding: 10,
+        backgroundColor: Colors.background_extra_dark,
     }
 });

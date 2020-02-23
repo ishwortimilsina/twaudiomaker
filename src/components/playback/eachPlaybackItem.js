@@ -62,8 +62,8 @@ export default function EachPlaybackItem(props) {
 
 const styles = StyleSheet.create({
     cardSectionStyle: {
-        backgroundColor: Colors.home_card,
-        borderColor: Colors.home_card,
+        backgroundColor: Colors.background_medium,
+        borderColor: Colors.background_medium,
         paddingTop: 10,
         paddingBottom: 10,
         paddingLeft: 20,
@@ -85,11 +85,11 @@ const styles = StyleSheet.create({
     },
     durationStyle: {
         fontSize: 14,
-        color: Colors.price_same
+        color: Colors.date_time_medium
     },
     dateStyle: {
         fontSize: 14,
-        color: Colors.price_same
+        color: Colors.date_time_medium
     },
     kebabStyle: {
         display: 'flex',

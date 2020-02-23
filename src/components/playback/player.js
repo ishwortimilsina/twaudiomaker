@@ -261,7 +261,7 @@ export default function Playback(props) {
             >
                 <Icon
                     name="close-circle"
-                    size={32}
+                    size={40}
                     color="black"
                 />
             </TouchableOpacity>
@@ -275,6 +275,9 @@ export default function Playback(props) {
                 style={styles.playbackSlider}
                 value={getSeekSliderPosition()}
                 onValueChange={setSeekPosition}
+                thumbTintColor={Colors.background_light}
+                minimumTrackTintColor={Colors.date_time_medium}
+                maximumTrackTintColor={Colors.background_extra_dark}
                 disabled={false}
             />
             <View style={styles.playbackTimestampContainer}>
@@ -295,7 +298,7 @@ export default function Playback(props) {
                             <Icon
                                 name="pause-circle"
                                 size={70}
-                                color="blue"
+                                color={Colors.background_light}
                             />
                         </TouchableOpacity>
                     ) : (
@@ -306,7 +309,7 @@ export default function Playback(props) {
                             <Icon
                                 name="play-circle"
                                 size={70}
-                                color="green"
+                                color={Colors.background_light}
                             />
                         </TouchableOpacity>
                     )
@@ -319,7 +322,7 @@ export default function Playback(props) {
                     <Icon
                         name="stop"
                         size={50}
-                        color={isPlaybackGoingOn ? "red" : "grey"}
+                        color={isPlaybackGoingOn ? Colors.background_light : Colors.background_dark}
                     />
                 </TouchableOpacity>
             </View>
@@ -355,12 +358,12 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         alignSelf: 'stretch',
         paddingRight: 20,
-        color: Colors.text_medium
+        color: Colors.date_time_medium
     },
     closeButton: {
         alignSelf: 'flex-end',
         padding: 5,
-        top: -20
+        top: -30
     },
     controlButtons: {
         marginRight: 20,
@@ -371,7 +374,8 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginTop: -30,
         padding: 5,
-        fontWeight: 'bold',
-        fontSize: 15
+        alignSelf: 'flex-start',
+        color: Colors.text_light,
+        fontSize: 16
     }
 });

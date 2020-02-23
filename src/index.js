@@ -12,6 +12,7 @@ import { StateContext, ActionContext } from './AppContext';
 import reducer from './store/reducer';
 import initialState from './store/initialState';
 import Home from './components/Home';
+import * as Colors from './themes/Colors';
 
 export default function Main(props) {
     const [ havePermission, setPermissionStatus ] = useState(false);
@@ -96,9 +97,7 @@ export default function Main(props) {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
-        margin: 10,
-        marginTop: 30,
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.background_dark,
     }
 });

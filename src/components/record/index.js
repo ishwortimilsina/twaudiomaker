@@ -7,6 +7,7 @@ import { audioQualityMap } from '../../constants/audioQualities';
 import { millToClockString } from '../../utils/datetime';
 import { ActionContext, StateContext } from '../../AppContext';
 import { moveFileToStorageDir } from '../../utils/fileManagement';
+import * as Colors from '../../themes/Colors';
 
 export default function Record(props) {
     const _recording = useRef(null);
@@ -117,48 +118,50 @@ export default function Record(props) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.clockContainer}>
-                <Text style={styles.clockText}>
-                    {millToClockString(recordSessionStarted ? recordingDuration : 0)}
-                </Text>
-            </View>
-            <View style={styles.buttonsContainer}>
-                {
-                    !isRecording ? (
-                        <TouchableOpacity
-                            style={styles.controlButtons}
-                            onPress={onRecordPress}
-                        >
-                            <Icon
-                                name="record-rec"
-                                size={200}
-                                color="green"
-                            />
-                        </TouchableOpacity>
-                    ) : (
-                        <TouchableOpacity
-                            style={styles.controlButtons}
-                            onPress={onPauseRecordPress}
-                        >
-                            <Icon
-                                name="pause"
-                                size={200}
-                                color="green"
-                            />
-                        </TouchableOpacity>
-                    ) 
-                }
-                <TouchableOpacity
-                    style={styles.controlButtons}
-                    onPress={onStopRecordPress}
-                    disabled={!recordSessionStarted}
-                >
-                    <Icon
-                        name="stop-circle"
-                        size={70}
-                        color={recordSessionStarted ? "red" : "grey"}
-                    />
-                </TouchableOpacity>
+            <View style={styles.recordContainer}>
+                <View style={styles.clockContainer}>
+                    <Text style={styles.clockText}>
+                        {millToClockString(recordSessionStarted ? recordingDuration : 0)}
+                    </Text>
+                </View>
+                <View style={styles.buttonsContainer}>
+                    {
+                        !isRecording ? (
+                            <TouchableOpacity
+                                style={styles.controlButtons}
+                                onPress={onRecordPress}
+                            >
+                                <Icon
+                                    name="record-rec"
+                                    size={200}
+                                    color="green"
+                                />
+                            </TouchableOpacity>
+                        ) : (
+                            <TouchableOpacity
+                                style={styles.controlButtons}
+                                onPress={onPauseRecordPress}
+                            >
+                                <Icon
+                                    name="pause"
+                                    size={200}
+                                    color="green"
+                                />
+                            </TouchableOpacity>
+                        ) 
+                    }
+                    <TouchableOpacity
+                        style={styles.controlButtons}
+                        onPress={onStopRecordPress}
+                        disabled={!recordSessionStarted}
+                    >
+                        <Icon
+                            name="stop-circle"
+                            size={70}
+                            color={recordSessionStarted ? "red" : "grey"}
+                        />
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     );
@@ -167,19 +170,21 @@ export default function Record(props) {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
-        // justifyContent: 'center',
         alignItems: 'center',
-        margin: 10,
+        padding: 10,
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.background_extra_dark,
         paddingTop: 50
+    },
+    recordContainer: {
+        backgroundColor: Colors.background_light,
+        borderRadius: 25
     },
     buttonsContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        margin: 10,
-        backgroundColor: '#fff',
+        margin: 10
     },
     clockText: {
         fontSize: 60,

@@ -4,6 +4,7 @@ import Modal from "react-native-modal";
 
 import PlaybackMenu from './playbackMenu';
 import DetailsMenu from './detailsMenu';
+import * as Colors from '../../themes/Colors';
 
 export default function Menu(props) {
     const { isModalVisible, toggleModal, item } = props;
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     modalViewStyle: {
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: '#FFF',
+        backgroundColor: Colors.background_light,
         padding: 20
     }
 });

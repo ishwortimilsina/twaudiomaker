@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
     },
     topBand: {
         marginTop: -10,
-        marginBottom: 20,
         height: 50,
         backgroundColor: Colors.background_dark
     },
@@ -34,7 +33,8 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.background_dark
     },
     drawerMain: {
-        flex: 1
+        flex: 1,
+        backgroundColor: Colors.background_light
     }
 });
 
