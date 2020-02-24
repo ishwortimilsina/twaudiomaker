@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
+import * as Colors from '../../themes/Colors';
+
 export function Button(props) {
     return (
         <TouchableOpacity
@@ -18,7 +20,7 @@ export function Button(props) {
                     props.disabled ? styles.disabledTextStyle : undefined
                 ]}
             >
-                {props.children}
+                {props.buttonText}
             </Text>
         </TouchableOpacity>
     );
@@ -26,25 +28,22 @@ export function Button(props) {
 
 const styles = StyleSheet.create({
     buttonStyle: {
-        backgroundColor: '#FFF',
-        borderColor: '#0071FF',
-        borderRadius: 5,
+        borderColor: Colors.background_dark,
+        borderWidth: 1,
         marginLeft: 10,
-        marginRight: 10,
-        borderStyle: 'solid',
-        borderWidth: 2
+        padding: 9,
+        borderRadius: 5,
+        backgroundColor: '#FFF'
+    },
+    buttonText: {
+        color: Colors.text_medium,
+        fontSize: 12,
+        fontWeight: 'normal'
     },
     disabledButtonStyle: {
         borderColor: '#AAA'
     },
     disabledTextStyle: {
         color: '#AAA'
-    },
-    textStyle: {
-        textAlign: 'center',
-        color: '#007AFF',
-        fontSize: 20,
-        fontWeight: 'bold',
-        padding: 10
     }
 });

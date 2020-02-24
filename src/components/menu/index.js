@@ -5,6 +5,7 @@ import Modal from "react-native-modal";
 import PlaybackMenu from './playbackMenu';
 import DetailsMenu from './detailsMenu';
 import * as Colors from '../../themes/Colors';
+import RenameModal from './renameModal';
 
 export default function Menu(props) {
     const { isModalVisible, toggleModal, item } = props;
@@ -24,8 +25,11 @@ export default function Menu(props) {
             <View style={styles.modalViewStyle}>
                 {
                     activeMenu === 'details' ? (
-                        <DetailsMenu
+                        <DetailsMenu item={item} />
+                    ) : activeMenu === 'renameFile' ? (
+                        <RenameModal
                             item={item}
+                            toggleModal={toggleModal}
                         />
                     ) : (
                         <PlaybackMenu

@@ -195,3 +195,14 @@ export async function moveFileToStorageDir(filePath) {
     const destinationPath = storageDirectory + fileName;
     return moveFile(filePath, destinationPath);
 }
+
+/**
+ * Function to rename a file in-place
+ * @param {string} filePath
+ * @param {string} newName
+ */
+export async function renameFile(filePath, newName) {
+    const oldName = filePath.split('/').pop();
+    const destinationPath = filePath.replace(oldName, newName);
+    return moveFile(filePath, destinationPath);
+}

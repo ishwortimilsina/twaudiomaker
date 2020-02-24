@@ -50,7 +50,10 @@ export default function PlaybackMenu(props) {
                 itemText="Share"
             />
             <TouchableMenuItem
-                onPress={() => console.log('Rename clicked.')}
+                onPress={() => {
+                    console.log('Rename clicked.');
+                    setActiveMenu('renameFile');
+                }}
                 itemIconName="rename-box"
                 itemText="Rename"
             />
