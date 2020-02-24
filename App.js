@@ -1,7 +1,8 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { StyleSheet, SafeAreaView } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import Main from './src';
 import CustomDrawerContent from './src/navigation/drawerContent';
@@ -10,12 +11,13 @@ import * as Colors from './src/themes/Colors';
 const Drawer = createDrawerNavigator();
 
 export default function App() {
+
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaProvider>
             <NavigationContainer style={styles.container}>
                 <Drawer.Navigator                
                     drawerContent={(props) => <CustomDrawerContent contentContainerStyle={{
-                        backgroundColor: Colors.background_light,
+                        backgroundColor: Colors.background_dark,
                         width: 300,
                         justifyContent: 'flex-start',
                         alignItems: 'flex-start',
@@ -25,7 +27,7 @@ export default function App() {
                     <Drawer.Screen name="Home" component={Main} />
                 </Drawer.Navigator>
             </NavigationContainer>
-        </SafeAreaView>
+        </SafeAreaProvider>
     );
 }
 

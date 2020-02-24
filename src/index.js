@@ -1,5 +1,6 @@
 import React, { useReducer, useMemo, useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 import {
     checkRecordAudioPermission,
@@ -74,12 +75,21 @@ export default function Main(props) {
             }
         })();
     }, []);
+
+    const safeAreaInsets = useSafeArea();
+    const viewStyle = {
+        ...styles.container,
+        paddingTop: safeAreaInsets.top,
+        paddingBottom: safeAreaInsets.bottom,
+        paddingLeft: safeAreaInsets.left,
+        paddingRight: safeAreaInsets.right
+    };
     
     if (havePermission) {
         return (
             <StateContext.Provider value={state}>
                 <ActionContext.Provider value={actions}>
-                    <View style={styles.container}>
+                    <View style={viewStyle}>
                         <Home />
                     </View>
                 </ActionContext.Provider>
@@ -88,7 +98,7 @@ export default function Main(props) {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={viewStyle}>
             <Text>The app needs to have permission to use the mic to be functional.</Text>
         </View>
     )
