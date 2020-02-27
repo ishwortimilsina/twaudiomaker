@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Switch } from 'react-native';
 
 import StorageSwitch from './storageSwitch';
+import QualityPicker from './qualityPicker';
 import * as Colors from '../themes/Colors';
   
 function CustomDrawerContent(props) {
@@ -12,6 +13,7 @@ function CustomDrawerContent(props) {
                 <View style={styles.topBand} />
                 <View style={styles.drawerMain}>
                     <StorageSwitch />
+                    <QualityPicker />
                 </View>
                 <View style={styles.bottomBand} />
             </View>

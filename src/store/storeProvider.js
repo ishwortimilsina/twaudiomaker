@@ -26,6 +26,7 @@ export default function StoreProvider(props) {
         dispatch({type: 'selectPlayback', selectedPlayback });
     };
     const changeRecordingQuality = (recordingQuality) => {
+        console.log(recordingQuality)
         dispatch({type: 'changeRecordingQuality', recordingQuality });
     };
     const changeStorageLocation = (storageLocation) => {
