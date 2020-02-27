@@ -9,7 +9,7 @@ import {
     requestRecordAudioPermission,
     requestExtStorageReadPermission,
     requestExtStorageWritePermission } from './utils/appPermissions';
-import StoreProvider from './store/storeProvider'
+
 import Home from './components/Home';
 import * as Colors from './themes/Colors';
 
@@ -55,11 +55,9 @@ export default function Main(props) {
     
     if (havePermission) {
         return (
-            <StoreProvider>
-                <View style={viewStyle}>
-                    <Home />
-                </View>
-            </StoreProvider>
+            <View style={viewStyle}>
+                <Home />
+            </View>
         );
     }
 

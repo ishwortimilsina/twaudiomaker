@@ -2,7 +2,24 @@ import RNFS from 'react-native-fs';
 import {Buffer} from 'buffer';
 import RNMediaMetadataRetriever from 'react-native-media-metadata-retriever';
 
-export const storageDirectory = RNFS.ExternalStorageDirectoryPath + '/recordings/music recordings/';
+/**
+ * Function to create a directory at a given path
+ * @param {string} path 
+ */
+const createDirectory = async (path) => {
+    return new Promise((resolve) => {
+        RNFS.mkdir(path)
+            .then((res) => resolve({ success: true }))
+            .catch((err) => resolve({ success: false, err }))
+    });
+};
+
+export const publicStorageDirectory = RNFS.ExternalStorageDirectoryPath + '/recordings/music recordings/';
+// create the recordings directory in price document directory location if it doesn't exist
+(async function createPrivateRecordingsDirectory() {
+    await createDirectory(RNFS.DocumentDirectoryPath + '/recordings/');
+})();
+export const privateStorageDirectory = RNFS.DocumentDirectoryPath + '/recordings/';
 
 /**
  * Function to get sample_rate, number of channels, bits per sample and duration of a wav audio file
@@ -104,48 +121,99 @@ const getMetadata = (path) => {
     });
 }
 
-// get a list of files and directories in the document path
-export async function getAudioFilesList() {
+/**
+ * Function to get a list of files from the public storage location
+ */
+async function getPublicAudioFiles() {
     return new Promise((resolve, reject) => {
+        RNFS.readDir(publicStorageDirectory)
+            .then(async (result) => {
+                const files = [];
+                let metaInfo;
+                for (let file of result) {
+                    // fetch metadata if possible
+                    metaInfo = await getMetadata(file.path);
+                    if (metaInfo.error) {
+                        console.log(metaInfo.error);
+                    }
 
-        RNFS.readDir(storageDirectory)
-        .then(async (result) => {
-            const files = [];
-            let metaInfo;
-            for (let file of result) {
-                // fetch metadata if possible
-                metaInfo = await getMetadata(file.path);
-                if (metaInfo.error) {
-                    console.log(metaInfo.error);
+                    let { isFile, isDirectory, ...fileMeta } = file;
+                    
+                    files.push({ ...fileMeta, ...metaInfo.data });
                 }
 
-                let { isFile, isDirectory, ...fileMeta } = file;
-                
-                files.push({ ...fileMeta, ...metaInfo.data });
-            }
-
-            resolve(files);
-        })
-        .catch((err) => {
-            resolve({
-                error: {
-                    message: err.message,
-                    code: err.code
-                }
+                resolve(files);
+            })
+            .catch((err) => {
+                resolve({
+                    error: {
+                        message: err.message,
+                        code: err.code
+                    }
+                });
             });
-        });
     });
 }
 
-// delete files in the document path
-export function deleteAudioFile(fileName) {
+/**
+ * Function to get a list of files from the private storage location
+ */
+async function getPrivateAudioFiles() {
     return new Promise((resolve, reject) => {
-        // file to delete
-        const path = storageDirectory + fileName;
+        RNFS.readDir(privateStorageDirectory)
+            .then(async (result) => {
+                const files = [];
+                let metaInfo;
+                for (let file of result) {
+                    // fetch metadata if possible
+                    metaInfo = await getMetadata(file.path);
+                    if (metaInfo.error) {
+                        console.log(metaInfo.error);
+                    }
 
-        return RNFS.unlink(path)
+                    let { isFile, isDirectory, ...fileMeta } = file;
+                    
+                    files.push({ ...fileMeta, ...metaInfo.data });
+                }
+
+                resolve(files);
+            })
+            .catch((err) => {
+                resolve({
+                    error: {
+                        message: err.message,
+                        code: err.code
+                    }
+                });
+            });
+    });
+}
+
+/**
+ * Get a list of files and directories from both public and private locations
+ */
+export async function getAudioFilesList() {
+    let allFiles = [];
+
+    const publicFiles = await getPublicAudioFiles();
+    if (!publicFiles.error) {
+        allFiles = [...publicFiles];
+    }
+
+    const privateFiles = await getPrivateAudioFiles();
+    if (!privateFiles.error) {
+        allFiles = [...allFiles, ...privateFiles];
+    }
+
+    return allFiles;
+}
+
+// delete files in the document path
+export function deleteAudioFile(filePath) {
+    return new Promise((resolve, reject) => {
+        return RNFS.unlink(filePath)
             .then(() => {
-                console.log(`FILE "${fileName}" DELETED`);
+                console.log(`FILE "${filePath}" DELETED`);
                 resolve(true);
             })
             // `unlink` will throw an error, if the item to unlink does not exist
@@ -189,10 +257,11 @@ export function moveFile(sourcePath, destinationPath) {
 /**
  * Function to move a file to our storage directory location
  * @param {string} filePath
+ * @param {string} storageLocation
  */
-export async function moveFileToStorageDir(filePath) {
+export async function moveFileToStorageDir(filePath, storageLocation) {
     const fileName = filePath.split('/').pop();
-    const destinationPath = storageDirectory + fileName;
+    const destinationPath = (storageLocation === 'private' ? privateStorageDirectory : publicStorageDirectory) + fileName;
     return moveFile(filePath, destinationPath);
 }
 

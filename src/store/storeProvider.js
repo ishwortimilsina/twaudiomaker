@@ -8,10 +8,10 @@ export default function StoreProvider(props) {
 
     // All the actions
     const addAudioToStore = (audio) => {
-        dispatch({ type: 'addAudio', payload: audio });
+        dispatch({ type: 'addAudio', audio });
     };
     const addMultiAudiosToStore = (audios) => {
-        dispatch({ type: 'addMultiAudios', payload: audios });
+        dispatch({ type: 'addMultiAudios', audios });
     }
     const removeAudioFromStore = (audioId) => {
         dispatch({ type: 'removeAudio', audioId });
@@ -25,6 +25,12 @@ export default function StoreProvider(props) {
     const selectPlayback = (selectedPlayback) => {
         dispatch({type: 'selectPlayback', selectedPlayback });
     };
+    const changeRecordingQuality = (recordingQuality) => {
+        dispatch({type: 'changeRecordingQuality', recordingQuality });
+    };
+    const changeStorageLocation = (storageLocation) => {
+        dispatch({type: 'changeStorageLocation', storageLocation });
+    };
 
     const actions = useMemo(() => ({
         addAudioToStore,
@@ -32,7 +38,9 @@ export default function StoreProvider(props) {
         removeAudioFromStore,
         changeIsPlaybackGoingOn,
         changeIsRecordingGoingOn,
-        selectPlayback
+        selectPlayback,
+        changeRecordingQuality,
+        changeStorageLocation
     }), []);
 
     return (

@@ -24,7 +24,8 @@ const initialState = {
     isRecordingGoingOn: false,
     isPlaybackGoingOn: false,
     selectedPlayback: null,
-    recordingQuality: 'high'
+    recordingQuality: 'high',
+    storageLocation: 'public'
 };
 
 export default initialState;

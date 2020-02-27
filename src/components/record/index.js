@@ -15,7 +15,7 @@ export default function Record(props) {
     const [ isRecording, changeIsRecording ] = useState(false);
     const [ recordingDuration, setRecordingDuration ] = useState(0);
     const { changeIsRecordingGoingOn } = useContext(ActionContext);
-    const { isRecordingGoingOn, recordingQuality } = useContext(StateContext);
+    const { isRecordingGoingOn, recordingQuality, storageLocation } = useContext(StateContext);
 
     useEffect(() => {
         // update isRecordingGoingOn value in the store
@@ -104,7 +104,7 @@ export default function Record(props) {
                 console.log('Recording session ended.');
 
                 // move the file to storage directory and let user know about saving
-                await moveFileToStorageDir(filePath);
+                await moveFileToStorageDir(filePath, storageLocation);
                 ToastAndroid.show('Recording saved.', ToastAndroid.SHORT);
             } else {
                 console.log('No prepared recording found to stop.');

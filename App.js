@@ -4,6 +4,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import StoreProvider from './src/store/storeProvider';
 import Main from './src';
 import CustomDrawerContent from './src/navigation/drawerContent';
 import * as Colors from './src/themes/Colors';
@@ -14,19 +15,21 @@ export default function App() {
 
     return (
         <SafeAreaProvider>
-            <NavigationContainer style={styles.container}>
-                <Drawer.Navigator                
-                    drawerContent={(props) => <CustomDrawerContent contentContainerStyle={{
-                        backgroundColor: Colors.background_dark,
-                        width: 300,
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                        flex: 1
-                    }} {...props} />}
-                >
-                    <Drawer.Screen name="Home" component={Main} />
-                </Drawer.Navigator>
-            </NavigationContainer>
+            <StoreProvider>
+                <NavigationContainer style={styles.container}>
+                    <Drawer.Navigator                
+                        drawerContent={(props) => <CustomDrawerContent contentContainerStyle={{
+                            backgroundColor: Colors.background_dark,
+                            width: 300,
+                            justifyContent: 'flex-start',
+                            alignItems: 'flex-start',
+                            flex: 1
+                        }} {...props} />}
+                    >
+                        <Drawer.Screen name="Home" component={Main} />
+                    </Drawer.Navigator>
+                </NavigationContainer>
+            </StoreProvider>
         </SafeAreaProvider>
     );
 }

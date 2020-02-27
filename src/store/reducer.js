@@ -5,8 +5,8 @@ const reducer = (state, action) => {
                 ...state,
                 playbacks: {
                     ...state.playbacks,
-                    [action.payload.audioId]: {
-                        ...action.payload
+                    [action.audio.audioId]: {
+                        ...action.audio
                     }
                 }
             };
@@ -15,7 +15,7 @@ const reducer = (state, action) => {
                 ...state,
                 playbacks: {
                     ...state.playbacks,
-                    ...action.payload
+                    ...action.audios
                 }
             };
         case 'removeAudio':
@@ -53,6 +53,16 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 selectedPlayback: action.selectedPlayback
+            };
+        case 'changeRecordingQuality':
+            return {
+                ...state,
+                recordingQuality: action.recordingQuality
+            };
+        case 'changeStorageLocation':
+            return {
+                ...state,
+                storageLocation: action.storageLocation
             };
         default:
             return state;

@@ -6,12 +6,12 @@ import { deleteAudioFile } from '../../utils/fileManagement';
 import { ActionContext } from '../../AppContext';
 
 export default function PlaybackMenu(props) {
-    const { toggleModal, name, audioId, setActiveMenu } = props;
+    const { toggleModal, name, audioId, filePath, setActiveMenu } = props;
     const { removeAudioFromStore } = useContext(ActionContext);
 
     // Delete the audio file, and update the store
     const onDeleteConfim = async () => {
-        const result = await deleteAudioFile(name);
+        const result = await deleteAudioFile(filePath);
         if (result.error) {
             console.log(result.error.message);
         } else {

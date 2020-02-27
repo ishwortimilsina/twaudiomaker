@@ -1,7 +1,8 @@
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Switch } from 'react-native';
 
+import StorageSwitch from './storageSwitch';
 import * as Colors from '../themes/Colors';
   
 function CustomDrawerContent(props) {
@@ -9,7 +10,9 @@ function CustomDrawerContent(props) {
         <DrawerContentScrollView {...props}>
             <View style={styles.drawerInnerContainer}>
                 <View style={styles.topBand} />
-                <View style={styles.drawerMain} />
+                <View style={styles.drawerMain}>
+                    <StorageSwitch />
+                </View>
                 <View style={styles.bottomBand} />
             </View>
         </DrawerContentScrollView>
@@ -34,6 +37,7 @@ const styles = StyleSheet.create({
     },
     drawerMain: {
         flex: 1,
+        alignItems: 'flex-start',
         backgroundColor: Colors.background_light
     }
 });

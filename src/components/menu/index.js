@@ -36,6 +36,7 @@ export default function Menu(props) {
                             toggleModal={toggleModal}
                             name={item.audioName}
                             audioId={item.audioId}
+                            filePath={item.audioUri}
                             setActiveMenu={setActiveMenu}
                         />
                     )
