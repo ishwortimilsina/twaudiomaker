@@ -1,4 +1,4 @@
-import React, { useReducer, useMemo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 
@@ -9,44 +9,12 @@ import {
     requestRecordAudioPermission,
     requestExtStorageReadPermission,
     requestExtStorageWritePermission } from './utils/appPermissions';
-import { StateContext, ActionContext } from './AppContext';
-import reducer from './store/reducer';
-import initialState from './store/initialState';
+import StoreProvider from './store/storeProvider'
 import Home from './components/Home';
 import * as Colors from './themes/Colors';
 
 export default function Main(props) {
     const [ havePermission, setPermissionStatus ] = useState(false);
-    const [state, dispatch] = useReducer(reducer, initialState);
-
-    // All the actions
-    const addAudioToStore = (audio) => {
-        dispatch({ type: 'addAudio', payload: audio });
-    };
-    const addMultiAudiosToStore = (audios) => {
-        dispatch({ type: 'addMultiAudios', payload: audios });
-    }
-    const removeAudioFromStore = (audioId) => {
-        dispatch({ type: 'removeAudio', audioId });
-    };
-    const changeIsRecordingGoingOn = (isRecordingGoingOn) => {
-        dispatch({ type: 'changeIsRecordingGoingOn', isRecordingGoingOn });
-    };
-    const changeIsPlaybackGoingOn = (isPlaybackGoingOn) => {
-        dispatch({ type: 'changeIsPlaybackGoingOn', isPlaybackGoingOn });
-    };
-    const selectPlayback = (selectedPlayback) => {
-        dispatch({type: 'selectPlayback', selectedPlayback });
-    };
-
-    const actions = useMemo(() => ({
-        addAudioToStore,
-        addMultiAudiosToStore,
-        removeAudioFromStore,
-        changeIsPlaybackGoingOn,
-        changeIsRecordingGoingOn,
-        selectPlayback
-    }), []);
 
     // first check the permission to use the mic.
     // Ask for the permission if not already granted.
@@ -87,13 +55,11 @@ export default function Main(props) {
     
     if (havePermission) {
         return (
-            <StateContext.Provider value={state}>
-                <ActionContext.Provider value={actions}>
-                    <View style={viewStyle}>
-                        <Home />
-                    </View>
-                </ActionContext.Provider>
-            </StateContext.Provider>
+            <StoreProvider>
+                <View style={viewStyle}>
+                    <Home />
+                </View>
+            </StoreProvider>
         );
     }
 
