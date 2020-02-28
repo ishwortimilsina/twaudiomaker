@@ -17,12 +17,13 @@ export default function StorageSwitch(props) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.iconContainer}>
+            <View style={styles.labelContainer}>
                 <Icon
                     name="sd-storage"
-                    size={35}
+                    size={25}
                     color="black"
                 />
+                <Text style={styles.labelStyle}>Storage </Text>
             </View>
             <View style={styles.innerContainer}>
                 <Text style={styles.switchLabels}>Private</Text>
@@ -43,16 +44,28 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginBottom: 15,
         marginTop: 15,
+        justifyContent: 'space-between',
+        width: '100%'
+    },
+    labelContainer: {
+        flexDirection: 'row',
         alignItems: 'center'
     },
     innerContainer: {
-        marginLeft: 30,
+        marginLeft: 15,
         flexDirection: 'row',
-        justifyContent: 'center'
+        alignItems: 'center',
+        alignSelf: 'flex-end'
     },
     switchLabels: {
-        fontSize: 18,
-        marginLeft: 10,
-        marginRight: 10
+        fontSize: 15,
+        marginLeft: 5,
+        marginRight: 5
+    },
+    labelStyle: {
+        fontSize: 15,
+        marginLeft: 5,
+        marginRight: 5,
+        fontWeight: 'bold'
     }
 });

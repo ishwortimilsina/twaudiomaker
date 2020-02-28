@@ -3,18 +3,21 @@ import { Picker, View, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { StateContext, ActionContext } from '../AppContext';
 
+import * as Colors from '../themes/Colors';
+
 export default function QualityPicker(props) {
     const { recordingQuality } = useContext(StateContext);
     const { changeRecordingQuality } = useContext(ActionContext);
 
     return (
         <View style={styles.container}>
-            <View style={styles.iconContainer}>
+            <View style={styles.labelContainer}>
                 <Icon
                     name="tune"
-                    size={35}
+                    size={25}
                     color="black"
                 />
+                <Text style={styles.labelStyle}>Rec. Quality </Text>
             </View>
             <View style={styles.innerContainer}>
                 <Picker
@@ -39,14 +42,24 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginBottom: 15,
         marginTop: 15,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%'
+    },
+    labelContainer: {
+        flexDirection: 'row',
         alignItems: 'center'
     },
     innerContainer: {
-        marginLeft: 35
+        marginLeft: 15
     },
     pickerStyle: {
-        width: 150,
-        alignSelf: 'stretch',
-        alignItems: 'center'
+        width: 150
+    },
+    labelStyle: {
+        fontSize: 15,
+        marginLeft: 5,
+        marginRight: 5,
+        fontWeight: 'bold'
     }
 });

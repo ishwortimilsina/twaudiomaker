@@ -5,6 +5,7 @@ import { View, Text, StyleSheet, Switch } from 'react-native';
 import StorageSwitch from './storageSwitch';
 import QualityPicker from './qualityPicker';
 import * as Colors from '../themes/Colors';
+import HorizontalLine from '../components/common/horizontalLine';
   
 function CustomDrawerContent(props) {
     return (
@@ -12,8 +13,12 @@ function CustomDrawerContent(props) {
             <View style={styles.drawerInnerContainer}>
                 <View style={styles.topBand} />
                 <View style={styles.drawerMain}>
-                    <StorageSwitch />
-                    <QualityPicker />
+                    <View style={styles.innerSection}>
+                        <Text style={styles.sectionTitle}>Settings</Text>
+                        <StorageSwitch />
+                        <QualityPicker />
+                        <HorizontalLine />
+                    </View>
                 </View>
                 <View style={styles.bottomBand} />
             </View>
@@ -29,7 +34,7 @@ const styles = StyleSheet.create({
     },
     topBand: {
         marginTop: -10,
-        height: 50,
+        height: 200,
         backgroundColor: Colors.background_dark
     },
     bottomBand: {
@@ -40,7 +45,17 @@ const styles = StyleSheet.create({
     drawerMain: {
         flex: 1,
         alignItems: 'flex-start',
-        backgroundColor: Colors.background_light
+        backgroundColor: Colors.background_light,
+        paddingTop: 20,
+        paddingBottom: 20
+    },
+    innerSection: {
+        paddingLeft: 10
+    },
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: Colors.text_medium
     }
 });
 

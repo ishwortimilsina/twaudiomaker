@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerN } from '@react-navigation/drawer';
 import { StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -17,14 +17,20 @@ export default function App() {
         <SafeAreaProvider>
             <StoreProvider>
                 <NavigationContainer style={styles.container}>
-                    <Drawer.Navigator                
-                        drawerContent={(props) => <CustomDrawerContent contentContainerStyle={{
+                    <Drawer.Navigator
+                        drawerStyle={{
                             backgroundColor: Colors.background_dark,
-                            width: 300,
-                            justifyContent: 'flex-start',
-                            alignItems: 'flex-start',
+                            width: 350,
                             flex: 1
-                        }} {...props} />}
+                        }}
+                        drawerContent={(props) => (
+                            <CustomDrawerContent
+                                contentContainerStyle={{
+                                    flex: 1
+                                }}
+                                {...props}
+                            />
+                        )}
                     >
                         <Drawer.Screen name="Home" component={Main} />
                     </Drawer.Navigator>
