@@ -48,7 +48,7 @@ export default function StoreProvider(props) {
             console.log(recordingQuality, storageLocation, recModeChannel);
         })();
     }, []);
-    console.log(state.recordingQuality, state.storageLocation, state.recModeChannel);
+
     const actions = useMemo(() => ({
         addAudioToStore,
         addMultiAudiosToStore,

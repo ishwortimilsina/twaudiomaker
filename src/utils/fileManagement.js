@@ -1,6 +1,7 @@
 import RNFS from 'react-native-fs';
 import {Buffer} from 'buffer';
 import RNMediaMetadataRetriever from 'react-native-media-metadata-retriever';
+import { getKeyVal } from './asyncStorageManagement';
 
 /**
  * Function to create a directory at a given path
@@ -122,20 +123,60 @@ const getMetadata = (path) => {
 }
 
 /**
- * Function to get a list of files from the public storage location
+ * Function to get metadata, erither from asyncStorage (if the file info is there),
+ * or by using our actual metadata retrieval functions.
+ * @param {object} audioFilesAsyncStorage
+ * @param {object} file
  */
-async function getPublicAudioFiles() {
+async function retrieveMetadata(audioFilesAsyncStorage, file) {
+    let metaInfo, fileId, asyncStorageFile;
+
+    fileId = 'Recording-' + (new Date(file.mtime.toString()).getTime());
+    if (
+        audioFilesAsyncStorage[fileId] &&
+        audioFilesAsyncStorage[fileId].audioName == file.name &&
+        audioFilesAsyncStorage[fileId].audioUri == file.path
+    ) {
+        asyncStorageFile = audioFilesAsyncStorage[fileId];
+        console.log(`Got metadata from the async storage for file ${asyncStorageFile.audioName}`);
+        metaInfo = {
+            data: {
+                duration: asyncStorageFile.audioDuration,
+                album: asyncStorageFile.audioAlbum,
+                artist: asyncStorageFile.audioArtist,
+                bit_rate: asyncStorageFile.audioBitRate,
+                bits_per_sample: asyncStorageFile.audioBitsPerSample,
+                genre: asyncStorageFile.audioGenre,
+                mime_type: asyncStorageFile.audioMimeType,
+                num_channels: asyncStorageFile.audioNumChannels,
+                sample_rate: asyncStorageFile.audioSampleRate,
+                title: asyncStorageFile.audioTitle
+            },
+            error: null
+        };
+    } else {
+        // fetch metadata if possible
+        metaInfo = await getMetadata(file.path);
+        if (metaInfo.error) {
+            console.log(metaInfo.error);
+        }
+    }
+
+    return metaInfo;
+}
+
+/**
+ * Function to get a list of files from the public storage location
+ * @param {object} audioFilesAsyncStorage
+ */
+async function getPublicAudioFiles(audioFilesAsyncStorage) {
     return new Promise((resolve, reject) => {
         RNFS.readDir(publicStorageDirectory)
             .then(async (result) => {
                 const files = [];
                 let metaInfo;
                 for (let file of result) {
-                    // fetch metadata if possible
-                    metaInfo = await getMetadata(file.path);
-                    if (metaInfo.error) {
-                        console.log(metaInfo.error);
-                    }
+                    metaInfo = await retrieveMetadata(audioFilesAsyncStorage, file);
 
                     let { isFile, isDirectory, ...fileMeta } = file;
                     
@@ -157,19 +198,16 @@ async function getPublicAudioFiles() {
 
 /**
  * Function to get a list of files from the private storage location
+ * @param {object} audioFilesAsyncStorage
  */
-async function getPrivateAudioFiles() {
+async function getPrivateAudioFiles(audioFilesAsyncStorage) {
     return new Promise((resolve, reject) => {
         RNFS.readDir(privateStorageDirectory)
             .then(async (result) => {
                 const files = [];
                 let metaInfo;
                 for (let file of result) {
-                    // fetch metadata if possible
-                    metaInfo = await getMetadata(file.path);
-                    if (metaInfo.error) {
-                        console.log(metaInfo.error);
-                    }
+                    metaInfo = await retrieveMetadata(audioFilesAsyncStorage, file);
 
                     let { isFile, isDirectory, ...fileMeta } = file;
                     
@@ -194,13 +232,22 @@ async function getPrivateAudioFiles() {
  */
 export async function getAudioFilesList() {
     let allFiles = [];
+    let audioFilesAsyncStorage = {};
+    // get the files from the asyncStorage, we will use this to not
+    // "get" metadata if we already have them for the respective file
+    try {
+        let asyncPlaybacks = await getKeyVal('playbacks');
+        audioFilesAsyncStorage = JSON.parse(asyncPlaybacks);
+    } catch (e) {
+        console.log(e);
+    }
 
-    const publicFiles = await getPublicAudioFiles();
+    const publicFiles = await getPublicAudioFiles(audioFilesAsyncStorage);
     if (!publicFiles.error) {
         allFiles = [...publicFiles];
     }
 
-    const privateFiles = await getPrivateAudioFiles();
+    const privateFiles = await getPrivateAudioFiles(audioFilesAsyncStorage);
     if (!privateFiles.error) {
         allFiles = [...allFiles, ...privateFiles];
     }
