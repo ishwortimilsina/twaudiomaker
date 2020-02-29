@@ -1,7 +1,10 @@
+import { saveKeyVal } from '../utils/asyncStorageManagement';
+
 const reducer = (state, action) => {
+    let newState;
     switch (action.type) {
         case 'addAudio':
-            return {
+            newState = {
                 ...state,
                 playbacks: {
                     ...state.playbacks,
@@ -10,14 +13,24 @@ const reducer = (state, action) => {
                     }
                 }
             };
+
+            // persist in asyncstorage
+            saveKeyVal('playbacks', newState.playbacks);
+
+            return newState;
         case 'addMultiAudios':
-            return {
+            newState = {
                 ...state,
                 playbacks: {
                     ...state.playbacks,
                     ...action.audios
                 }
             };
+
+            // persist in asyncstorage
+            saveKeyVal('playbacks', newState.playbacks);
+
+            return newState;
         case 'removeAudio':
             let newPlaybacks = {};
 
@@ -33,6 +46,9 @@ const reducer = (state, action) => {
                 state.selectedPlayback.audioId === action.audioId
                     ? null
                     : state.selectedPlayback;
+
+            // persist in asyncstorage
+            saveKeyVal('playbacks', newPlaybacks);
 
             return {
                 ...state,
@@ -55,19 +71,34 @@ const reducer = (state, action) => {
                 selectedPlayback: action.selectedPlayback
             };
         case 'changeRecordingQuality':
+            let newRecQuality = action.recordingQuality || state.recordingQuality;
+
+            // persist in asyncstorage
+            saveKeyVal('recordingQuality', newRecQuality);
+
             return {
                 ...state,
-                recordingQuality: action.recordingQuality
+                recordingQuality: newRecQuality
             };
         case 'changeStorageLocation':
+            let newStorageLocation = action.storageLocation || state.storageLocation;
+
+            // persist in asyncstorage
+            saveKeyVal('storageLocation', newStorageLocation);
+
             return {
                 ...state,
-                storageLocation: action.storageLocation
+                storageLocation: newStorageLocation
             };
         case 'changeRecModeChannel':
+            let newRecMode = action.recModeChannel || state.recModeChannel;
+
+            // persist in asyncstorage
+            saveKeyVal('recModeChannel', newRecMode);
+
             return {
                 ...state,
-                recModeChannel: action.recModeChannel
+                recModeChannel: newRecMode
             };
         default:
             return state;

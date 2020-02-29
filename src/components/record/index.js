@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
         padding: 10,
         flex: 1,
         backgroundColor: Colors.background_extra_dark,
-        paddingTop: 50
+        paddingTop: 100
     },
     recordContainer: {
         backgroundColor: Colors.background_light,

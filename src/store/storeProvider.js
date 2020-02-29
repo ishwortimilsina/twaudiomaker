@@ -1,7 +1,8 @@
-import React, { useReducer, useMemo } from 'react';
+import React, { useReducer, useMemo, useEffect } from 'react';
 import { StateContext, ActionContext } from '../AppContext';
 import reducer from './reducer';
 import initialState from './initialState';
+import { getKeyVal } from '../utils/asyncStorageManagement';
 
 export default function StoreProvider(props) {
     const [state, dispatch] = useReducer(reducer, initialState);
@@ -26,7 +27,6 @@ export default function StoreProvider(props) {
         dispatch({ type: 'selectPlayback', selectedPlayback });
     };
     const changeRecordingQuality = (recordingQuality) => {
-        console.log(recordingQuality)
         dispatch({ type: 'changeRecordingQuality', recordingQuality });
     };
     const changeStorageLocation = (storageLocation) => {
@@ -36,6 +36,19 @@ export default function StoreProvider(props) {
         dispatch({ type: 'changeRecModeChannel', recModeChannel });
     };
 
+    useEffect(() => {
+        // populate the store with the following saved values in the asyncStorage
+        (async function getQualityLocationModeAsync() {
+            const recordingQuality = await getKeyVal('recordingQuality');
+            changeRecordingQuality(recordingQuality);
+            const storageLocation = await getKeyVal('storageLocation');
+            changeStorageLocation(storageLocation);
+            const recModeChannel = await getKeyVal('recModeChannel');
+            changeRecModeChannel(recModeChannel);
+            console.log(recordingQuality, storageLocation, recModeChannel);
+        })();
+    }, []);
+    console.log(state.recordingQuality, state.storageLocation, state.recModeChannel);
     const actions = useMemo(() => ({
         addAudioToStore,
         addMultiAudiosToStore,

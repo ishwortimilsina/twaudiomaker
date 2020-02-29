@@ -29,7 +29,7 @@ export default function ModeSwitch(props) {
                 <Text style={styles.switchLabels}>Mono</Text>
                 <Switch
                     onValueChange={handleValueChange}
-                    value={recModeChannel === 2}
+                    value={recModeChannel == 2}
                 />
                 <Text style={styles.switchLabels}>Stereo</Text>
             </View>

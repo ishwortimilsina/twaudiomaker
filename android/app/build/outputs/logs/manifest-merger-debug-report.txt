@@ -15,6 +15,7 @@ MERGED from [:react-native-safe-area-context] /home/ishwor/Apps/twaudiomaker/nod
 MERGED from [:react-native-gesture-handler] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-gesture-handler/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:@react-native-community_masked-view] /home/ishwor/Apps/twaudiomaker/node_modules/@react-native-community/masked-view/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [:react-native-reanimated] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-reanimated/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
+MERGED from [:@react-native-community_async-storage] /home/ishwor/Apps/twaudiomaker/node_modules/@react-native-community/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [:react-native-media-metadata-retriever] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-media-metadata-retriever/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-18:12
 MERGED from [:react-native-permissions] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-permissions/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [com.facebook.react:react-native:0.61.5] /home/ishwor/.gradle/caches/transforms-2/files-2.1/ad52d7ac70417f79d897fbe9c61f9a53/AndroidManifest.xml:2:1-13:12
@@ -191,6 +192,8 @@ MERGED from [:@react-native-community_masked-view] /home/ishwor/Apps/twaudiomake
 MERGED from [:@react-native-community_masked-view] /home/ishwor/Apps/twaudiomaker/node_modules/@react-native-community/masked-view/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-reanimated] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-reanimated/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-reanimated] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-reanimated/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:@react-native-community_async-storage] /home/ishwor/Apps/twaudiomaker/node_modules/@react-native-community/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:@react-native-community_async-storage] /home/ishwor/Apps/twaudiomaker/node_modules/@react-native-community/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:react-native-media-metadata-retriever] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-media-metadata-retriever/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:6:5-8:41
 MERGED from [:react-native-media-metadata-retriever] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-media-metadata-retriever/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:6:5-8:41
 MERGED from [:react-native-permissions] /home/ishwor/Apps/twaudiomaker/node_modules/react-native-permissions/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
