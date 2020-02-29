@@ -13,10 +13,11 @@ export default function PlaybackMenu(props) {
         audioMimeType,
         audioBitsPerSample,
         audioSampleRate,
+        audioNumChannels,
         audioBitRate } = props.item;
     const durationString = millToClockString(audioDuration);
     const location = audioUri.replace('/storage/emulated/0/', '/Internal Storage/');
-    const format = `${audioMimeType}, ${audioBitsPerSample}bit, ${Math.floor(audioBitRate / 1000)}kbps, ${Math.floor(audioSampleRate / 1000)}Hz`;
+    const format = `${audioMimeType}, ${audioBitsPerSample}bit, ${Math.floor(audioBitRate / 1000)}kbps, ${Math.floor(audioSampleRate / 1000)}KHz, ${audioNumChannels === 1 ? 'Mono': 'Stereo'}`;
     return (
         <>
             <Text style={styles.menuTitle} numberOfLines={1}>Details</Text>

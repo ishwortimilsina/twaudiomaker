@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, Switch } from 'react-native';
 
 import StorageSwitch from './storageSwitch';
 import QualityPicker from './qualityPicker';
+import ModeSwitch from './modeSwitch';
 import * as Colors from '../themes/Colors';
 import HorizontalLine from '../components/common/horizontalLine';
   
@@ -17,6 +18,7 @@ function CustomDrawerContent(props) {
                         <Text style={styles.sectionTitle}>Settings</Text>
                         <StorageSwitch />
                         <QualityPicker />
+                        <ModeSwitch />
                         <HorizontalLine />
                     </View>
                 </View>

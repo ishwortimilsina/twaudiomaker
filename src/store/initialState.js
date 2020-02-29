@@ -18,6 +18,8 @@
  *      audioCreated: <number> // epoch
  * },
  * recordingQuality: <string> // "very_low", "low", "medium", "high", "very_high"
+ * storageLocation: <string> // "public", "private"
+ * recModeChannel: <number> // 1, 2
  */
 const initialState = {
     playbacks: {},
@@ -25,7 +27,8 @@ const initialState = {
     isPlaybackGoingOn: false,
     selectedPlayback: null,
     recordingQuality: 'high',
-    storageLocation: 'public'
+    storageLocation: 'public',
+    recModeChannel: 2
 };
 
 export default initialState;

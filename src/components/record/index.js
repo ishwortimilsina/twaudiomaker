@@ -15,7 +15,7 @@ export default function Record(props) {
     const [ isRecording, changeIsRecording ] = useState(false);
     const [ recordingDuration, setRecordingDuration ] = useState(0);
     const { changeIsRecordingGoingOn } = useContext(ActionContext);
-    const { isRecordingGoingOn, recordingQuality, storageLocation } = useContext(StateContext);
+    const { isRecordingGoingOn, recordingQuality, storageLocation, recModeChannel } = useContext(StateContext);
 
     useEffect(() => {
         // update isRecordingGoingOn value in the store
@@ -38,7 +38,7 @@ export default function Record(props) {
                 const audioPath = AudioUtils.DocumentDirectoryPath + `/Recording ${stringDateTime}.aac`;
                 AudioRecorder.prepareRecordingAtPath(audioPath, {
                     SampleRate: sampleRate,
-                    Channels: channels,
+                    Channels: recModeChannel,
                     AudioQuality: quality,
                     AudioEncoding: encoding,
                     AudioEncodingBitRate: bitRate

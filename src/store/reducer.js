@@ -64,6 +64,11 @@ const reducer = (state, action) => {
                 ...state,
                 storageLocation: action.storageLocation
             };
+        case 'changeRecModeChannel':
+            return {
+                ...state,
+                recModeChannel: action.recModeChannel
+            };
         default:
             return state;
     }

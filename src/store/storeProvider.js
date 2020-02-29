@@ -23,14 +23,17 @@ export default function StoreProvider(props) {
         dispatch({ type: 'changeIsPlaybackGoingOn', isPlaybackGoingOn });
     };
     const selectPlayback = (selectedPlayback) => {
-        dispatch({type: 'selectPlayback', selectedPlayback });
+        dispatch({ type: 'selectPlayback', selectedPlayback });
     };
     const changeRecordingQuality = (recordingQuality) => {
         console.log(recordingQuality)
-        dispatch({type: 'changeRecordingQuality', recordingQuality });
+        dispatch({ type: 'changeRecordingQuality', recordingQuality });
     };
     const changeStorageLocation = (storageLocation) => {
-        dispatch({type: 'changeStorageLocation', storageLocation });
+        dispatch({ type: 'changeStorageLocation', storageLocation });
+    };
+    const changeRecModeChannel = (recModeChannel) => {
+        dispatch({ type: 'changeRecModeChannel', recModeChannel });
     };
 
     const actions = useMemo(() => ({
@@ -41,7 +44,8 @@ export default function StoreProvider(props) {
         changeIsRecordingGoingOn,
         selectPlayback,
         changeRecordingQuality,
-        changeStorageLocation
+        changeStorageLocation,
+        changeRecModeChannel
     }), []);
 
     return (
