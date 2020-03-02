@@ -6,9 +6,7 @@ const evaluateResults = (result) => {
         case RESULTS.DENIED:
         case RESULTS.BLOCKED:
             return false;
-            return false;
         case RESULTS.GRANTED:
-            return true;
             return true;
     }
 }

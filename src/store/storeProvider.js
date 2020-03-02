@@ -45,7 +45,6 @@ export default function StoreProvider(props) {
             changeStorageLocation(storageLocation);
             const recModeChannel = await getKeyVal('recModeChannel');
             changeRecModeChannel(recModeChannel);
-            console.log(recordingQuality, storageLocation, recModeChannel);
         })();
     }, []);
 

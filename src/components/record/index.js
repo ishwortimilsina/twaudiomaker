@@ -33,10 +33,10 @@ export default function Record(props) {
             try {
                 const time = new Date();
                 const stringDateTime = `${time.getMonth()}-${time.getDate()}-${time.getFullYear()} ${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}`;
-                const { encoding, bitRate, channels, sampleRate, quality } = audioQualityMap[recordingQuality];
+                const { encoding, bitRate, sampleRate, quality } = audioQualityMap[recordingQuality];
 
                 const audioPath = AudioUtils.DocumentDirectoryPath + `/Recording ${stringDateTime}.aac`;
-                AudioRecorder.prepareRecordingAtPath(audioPath, {
+                await AudioRecorder.prepareRecordingAtPath(audioPath, {
                     SampleRate: sampleRate,
                     Channels: recModeChannel,
                     AudioQuality: quality,
