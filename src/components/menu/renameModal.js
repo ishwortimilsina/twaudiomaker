@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, StyleSheet, TextInput, View, ToastAndroid } from 'react-native';
 
 import { Button } from '../common';
-import * as Colors from '../../themes/Colors';
+import Colors from '../../themes/Colors';
 import { renameFile } from '../../utils/fileManagement';
 
 export default function RenameModal(props) {
@@ -11,6 +11,12 @@ export default function RenameModal(props) {
     const [ value, changeValue ] = useState(name);
     const [ hasInputChanged, changeHasInputChanged ] = useState(false);
     const [ renameFailed, changeRenameFailed ] = useState(false);
+
+    // For theming purposes
+    styles.textInput = {
+        ...styles.textInput,
+        borderColor: Colors.background_dark
+    };
 
     const onInputChange = (value) => {
         if (!hasInputChanged) {

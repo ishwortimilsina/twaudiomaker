@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { CardSection } from '../common';
 import { millToClockString } from '../../utils/datetime';
 import { ActionContext, StateContext } from '../../AppContext';
-import * as Colors from '../../themes/Colors';
+import Colors from '../../themes/Colors';
 
 let playbackProgress = null;
 export default function Playback(props) {
@@ -18,6 +18,20 @@ export default function Playback(props) {
     const [isPlaybackLoaded, setIsPlaybackLoaded] = useState(false);
     const { changeIsPlaybackGoingOn, selectPlayback } = useContext(ActionContext);
     const { isPlaybackGoingOn, isRecordingGoingOn } = useContext(StateContext);
+
+    // For theming purposes
+    styles.playerContainer = {
+        ...styles.playerContainer,
+        backgroundColor: Colors.background_medium
+    };
+    styles.playbackTimestamp = {
+        ...styles.playbackTimestamp,
+        color: Colors.date_time_medium
+    };
+    styles.nameStyle = {
+        ...styles.nameStyle,
+        color: Colors.text_light
+    };
 
     // This function will be used as a callback to "play"
     // Gets invoked whenever a playback finishes playing

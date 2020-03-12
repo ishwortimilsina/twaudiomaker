@@ -4,12 +4,18 @@ import Modal from "react-native-modal";
 
 import PlaybackMenu from './playbackMenu';
 import DetailsMenu from './detailsMenu';
-import * as Colors from '../../themes/Colors';
+import Colors from '../../themes/Colors';
 import RenameModal from './renameModal';
 
 export default function Menu(props) {
     const { isModalVisible, toggleModal, item } = props;
     const [ activeMenu, setActiveMenu ] = useState('main');
+
+    // For theming purposes
+    styles.modalViewStyle = {
+        ...styles.modalViewStyle,
+        backgroundColor: Colors.background_light
+    };
 
     useEffect(() => {
         if (!isModalVisible) {

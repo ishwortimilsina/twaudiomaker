@@ -7,7 +7,7 @@ import { audioQualityMap } from '../../constants/audioQualities';
 import { millToClockString } from '../../utils/datetime';
 import { ActionContext, StateContext } from '../../AppContext';
 import { moveFileToStorageDir } from '../../utils/fileManagement';
-import * as Colors from '../../themes/Colors';
+import Colors from '../../themes/Colors';
 
 export default function Record(props) {
     const _recording = useRef(null);
@@ -16,6 +16,15 @@ export default function Record(props) {
     const [ recordingDuration, setRecordingDuration ] = useState(0);
     const { changeIsRecordingGoingOn } = useContext(ActionContext);
     const { isRecordingGoingOn, recordingQuality, storageLocation, recModeChannel } = useContext(StateContext);
+
+    styles.container = {
+        ...styles.container,
+        backgroundColor: Colors.background_extra_dark
+    };
+    styles.recordContainer = {
+        ...styles.recordContainer,
+        backgroundColor: Colors.background_light
+    };
 
     useEffect(() => {
         // update isRecordingGoingOn value in the store

@@ -28,7 +28,8 @@ const initialState = {
     selectedPlayback: null,
     recordingQuality: 'high',
     storageLocation: 'public',
-    recModeChannel: 2
+    recModeChannel: 2,
+    theme: 'green'
 };
 
 export default initialState;

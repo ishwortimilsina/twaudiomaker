@@ -35,6 +35,9 @@ export default function StoreProvider(props) {
     const changeRecModeChannel = (recModeChannel) => {
         dispatch({ type: 'changeRecModeChannel', recModeChannel });
     };
+    const changeTheme = (theme) => {
+        dispatch({ type: 'changeTheme', theme });
+    };
 
     useEffect(() => {
         // populate the store with the following saved values in the asyncStorage
@@ -45,6 +48,8 @@ export default function StoreProvider(props) {
             changeStorageLocation(storageLocation);
             const recModeChannel = await getKeyVal('recModeChannel');
             changeRecModeChannel(recModeChannel);
+            const theme = await getKeyVal('theme');
+            changeTheme(theme);
         })();
     }, []);
 
@@ -57,7 +62,8 @@ export default function StoreProvider(props) {
         selectPlayback,
         changeRecordingQuality,
         changeStorageLocation,
-        changeRecModeChannel
+        changeRecModeChannel,
+        changeTheme
     }), []);
 
     return (

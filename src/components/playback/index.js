@@ -4,11 +4,17 @@ import { View, StyleSheet } from 'react-native';
 import { StateContext } from '../../AppContext';
 import PlaybackList from './playbackList';
 import Player from './player';
-import * as Colors from '../../themes/Colors';
+import Colors from '../../themes/Colors';
 
 export default function Playback(props) {
     const { selectedPlayback } = useContext(StateContext);
     const [ playbackToUse, setPlaybackToUse ] = useState(selectedPlayback);
+
+    // for theming purposes
+    styles.controlsContainer = {
+        ...styles.controlsContainer,
+        backgroundColor: Colors.background_extra_dark,
+    };
 
     // This is kind of a hacky solution.
     // Problem:

@@ -1,13 +1,37 @@
 
-export const background_extra_dark = '#2C3940';
-export const background_dark = '#455a64';
-export const background_medium = '#587380';
-export const background_light = '#C4CFE6';
-export const button_bg = '#0693e3';
-export const button_fg = '#d9e3f0';
-export const text_light = '#d9d9d9';
-export const text_medium = '#455a64';
-export const text_dark = '#263238';
-export const home_card = '#455a64';
-export const button_red_medium = '#F21B27';
-export const date_time_medium = '#FFBF48';
+import { store } from '../store/reducer';
+
+const Colors = {};
+
+const setColor = (theme) => {
+    if (theme === 'red') {
+        Colors.background_extra_dark = '#662D21';
+        Colors.background_dark = '#CE584A';
+        Colors.background_medium = '#F05F4A';
+        Colors.background_light = '#C4CFE6';
+        Colors.text_light = '#d9d9d9';
+        Colors.text_medium = '#455a64';
+        Colors.text_dark = '#263238';
+        Colors.date_time_medium = '#401A14';
+    } else {
+        Colors.background_extra_dark = '#2C3940';
+        Colors.background_dark = '#455a64';
+        Colors.background_medium = '#587380';
+        Colors.background_light = '#C4CFE6';
+        Colors.text_light = '#d9d9d9';
+        Colors.text_medium = '#455a64';
+        Colors.text_dark = '#263238';
+        Colors.date_time_medium = '#FFBF48';
+    }
+};
+
+const theme = store.getState();
+setColor(theme);
+
+store.subscribe(() => {
+    // console.log('An action was dispatched');
+    const state = store.getState();
+    setColor(state.theme);
+});
+
+export default Colors;

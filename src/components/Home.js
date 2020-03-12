@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import Record from './record';
 import Playback from './playback';
-import * as Colors from '../themes/Colors';
+import Colors from '../themes/Colors';
+import { StateContext } from '../AppContext';
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function Home(props) {
+    // just so that this component re-renders during theme change
+    const { theme } = useContext(StateContext);
     return (
         <Tab.Navigator
             tabBarOptions={{
@@ -17,6 +20,9 @@ export default function Home(props) {
                 },
                 style: {
                     backgroundColor: Colors.background_dark,
+                },
+                indicatorStyle: {
+                    backgroundColor: Colors.background_light
                 },
                 activeTintColor: Colors.text_light
             }}

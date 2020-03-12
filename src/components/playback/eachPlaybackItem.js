@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { CardSection } from '../common';
-import * as Colors from '../../themes/Colors';
+import Colors from '../../themes/Colors';
 import { millToClockString } from '../../utils/datetime';
 import { ActionContext } from '../../AppContext';
 import Menu from '../menu';
@@ -17,6 +17,25 @@ export default function EachPlaybackItem(props) {
     const timeString = createdDate.toLocaleTimeString('en-US');
     const dateString = createdDate.toLocaleDateString('en-US');
     const durationString = millToClockString(audioDuration);
+
+    // For theming purposes
+    styles.cardSectionStyle = {
+        ...styles.cardSectionStyle,
+        backgroundColor: Colors.background_medium,
+        borderColor: Colors.background_medium
+    };
+    styles.nameStyle = {
+        ...styles.nameStyle,
+        color: Colors.text_light
+    };
+    styles.durationStyle = {
+        ...styles.durationStyle,
+        color: Colors.date_time_medium
+    };
+    styles.dateStyle = {
+        ...styles.dateStyle,
+        color: Colors.date_time_medium
+    };
 
     useEffect(() => {
         return () => {

@@ -1,14 +1,37 @@
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet, Switch } from 'react-native';
 
 import StorageSwitch from './storageSwitch';
 import QualityPicker from './qualityPicker';
 import ModeSwitch from './modeSwitch';
-import * as Colors from '../themes/Colors';
+import ThemePicker from './themePicker';
 import HorizontalLine from '../components/common/horizontalLine';
+import Colors from '../themes/Colors';
+import { StateContext } from '../AppContext';
   
 function CustomDrawerContent(props) {
+    // just so that this component re-renders during theme change
+    const { theme } = useContext(StateContext);
+
+    // For theming purposes
+    styles.topBand = {
+        ...styles.topBand,
+        backgroundColor: Colors.background_dark
+    };
+    styles.bottomBand = {
+        ...styles.bottomBand,
+        backgroundColor: Colors.background_dark
+    };
+    styles.drawerMain = {
+        ...styles.drawerMain,
+        backgroundColor: Colors.background_light
+    };
+    styles.sectionTitle = {
+        ...styles.sectionTitle,
+        color: Colors.text_medium
+    };
+
     return (
         <DrawerContentScrollView {...props}>
             <View style={styles.drawerInnerContainer}>
@@ -19,6 +42,7 @@ function CustomDrawerContent(props) {
                         <StorageSwitch />
                         <QualityPicker />
                         <ModeSwitch />
+                        <ThemePicker />
                         <HorizontalLine />
                     </View>
                 </View>

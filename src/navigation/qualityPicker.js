@@ -3,8 +3,6 @@ import { Picker, View, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { StateContext, ActionContext } from '../AppContext';
 
-import * as Colors from '../themes/Colors';
-
 export default function QualityPicker(props) {
     const { recordingQuality } = useContext(StateContext);
     const { changeRecordingQuality } = useContext(ActionContext);

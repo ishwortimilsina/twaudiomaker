@@ -1,9 +1,15 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import * as Colors from '../../themes/Colors';
+import Colors from '../../themes/Colors';
 
 export function Button(props) {
+    // For theming purposes
+    styles.buttonStyle = {
+        ...styles.buttonStyle,
+        borderColor: Colors.background_dark
+    };
+
     return (
         <TouchableOpacity
             onPress={props.onPress}
